@@ -1,15 +1,18 @@
 import os
 from pathlib import Path
-from decouple import Config, RepositoryEnv
+from decouple import Config, RepositoryEnv, AutoConfig
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 env_file = os.path.join(BASE_DIR, ".env")
-config = Config(RepositoryEnv(env_file))
-SECRET_KEY = 'django-insecure-blackrock-change-this-in-production-use-env-var'
 
-DEBUG = True  # Set to False in production
+if os.path.exists(env_file):
+    config = Config(RepositoryEnv(env_file))
+else:
+    config = AutoConfig()
 
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-blackrock-change-this-in-production-use-env-var')
+DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
