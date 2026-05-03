@@ -3,7 +3,14 @@
   "builds": [
     {
       "src": "blackrock/wsgi.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": [
+          "templates/**",
+          "static/**",
+          "blackrock/**"
+        ]
+      }
     }
   ],
   "routes": [
