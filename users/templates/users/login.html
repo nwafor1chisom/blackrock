@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+
+{% block auth_content %}
+<style>
+  .auth-page {
+    min-height: 100vh;
+    display: flex;
+    background: var(--bg);
+  }
+  .auth-left {
+    flex: 1;
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .auth-left::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.04) 0%, transparent 50%);
+  }
+  .auth-brand {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .auth-brand .big-logo {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; color: #000;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 32px rgba(201,168,76,0.3);
+  }
+  .auth-brand h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+  }
+  .auth-brand p { color: var(--text-2); margin-top: 8px; font-size: 14px; letter-spacing: 0.05em; }
+  .auth-features { margin-top: 50px; display: flex; flex-direction: column; gap: 18px; }
+  .auth-feature {
+    display: flex; align-items: center; gap: 14px;
+    color: var(--text-2); font-size: 14px;
+  }
+  .auth-feature i {
+    width: 36px; height: 36px;
+    background: var(--gold-muted);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .auth-right {
+    width: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 56px;
+  }
+  .auth-form-wrap { width: 100%; }
+  .auth-form-wrap h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .auth-form-wrap p { color: var(--text-2); font-size: 14px; margin-bottom: 32px; }
+  .auth-link { text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-2); }
+
+  @media (max-width: 900px) {
+    .auth-left { display: none; }
+    .auth-right { width: 100%; padding: 40px 24px; }
+  }
+  
+  .brand{
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+}
+</style>
+
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-brand">
+         <img class="brand" src="{% static 'core/images/logo.jpg' %}" alt="Logo">
+      <h1>BLACKROCK</h1>
+      <p>Enterprise Digital Finance Platform</p>
+    </div>
+    <div class="auth-features">
+      <div class="auth-feature"><i class="fas fa-shield-halved"></i><span>Bank-grade security & double-entry ledger</span></div>
+      <div class="auth-feature"><i class="fas fa-lock"></i><span>Full KYC verification system</span></div>
+      <div class="auth-feature"><i class="fas fa-coins"></i><span>Multi-currency crypto deposits</span></div>
+      <div class="auth-feature"><i class="fas fa-chart-line"></i><span>Real-time balance & audit trail</span></div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-form-wrap fade-up">
+      <h2>Welcome Back</h2>
+      <p>Sign in to your BLACKROCK account</p>
+
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          <i class="fas fa-exclamation-circle"></i> {{ message }}
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" action="{% url 'users:login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" name="username" class="form-control" placeholder="you@example.com" required autofocus>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <div style="text-align:right;margin-bottom:8px;">
+          <a href="{% url 'users:forgot_password' %}" style="font-size:13px;color:var(--text-2);">
+            <i class="fas fa-lock" style="font-size:11px;"></i> Forgot Password?
+          </a>
+        </div>
+        <button type="submit" class="btn btn-gold btn-block btn-lg">
+          <i class="fas fa-right-to-bracket"></i> Sign In
+        </button>
+      </form>
+
+      <div class="auth-link">
+        Don't have an account? <a href="{% url 'users:register' %}">Create Account</a>
+      </div>
+      <div style="text-align:center;margin-top:12px;">
+        <a href="{% url 'public:home' %}" style="font-size:13px;color:var(--text-3);">
+          <i class="fas fa-arrow-left" style="font-size:11px;"></i> Back to Home
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          { pageLanguage: 'en' },
+          'google_translate_element'
+        );
+      }
+      </script>  
+      <!-- CDN -->
+      <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>  
+{% endblock %}

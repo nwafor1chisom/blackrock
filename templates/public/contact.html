@@ -1,0 +1,209 @@
+{% extends "public/base.html" %}
+{% load static %}
+{% block title %}Contact Support{% endblock %}
+
+{% block content %}
+
+<style>
+.contact-section { padding: 90px 0; }
+.contact-section .section-header { text-align:center; max-width:650px; margin:0 auto 50px; }
+.contact-section .section-title { font-size:2.2rem; font-weight:800; margin-bottom:12px; }
+.contact-section .section-title b { color:hsl(40 54% 56%); }
+.contact-grid {
+  width:92%; max-width:1200px; margin:auto;
+  display:grid; grid-template-columns:1fr 1.4fr; gap:28px;
+}
+@media(max-width:991px) { .contact-grid { grid-template-columns:1fr; } }
+.contact-card {
+  background:rgba(15,23,42,0.75);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px; padding:26px;
+  transition:all 0.3s ease;
+}
+.contact-card:hover { transform:translateY(-6px); border-color:rgba(255,255,255,0.15); }
+.contact-card small { color:rgba(255,255,255,0.6); }
+.contact-card .value { color:#fff; font-weight:600; margin-top:4px; }
+.form-control {
+  background:#0f172a; border:1px solid rgba(255,255,255,0.08);
+  color:#fff; border-radius:12px; padding:12px 14px; transition:all 0.25s ease;
+}
+.form-control::placeholder { color:rgba(255,255,255,0.5); }
+.form-control:focus {
+  border-color:hsl(40 54% 56%);
+  box-shadow:0 0 0 3px rgba(212,175,55,0.15);
+  background:#0f172a; color:#fff;
+}
+.btn-primary {
+  background:hsl(40 54% 56%); border:none; font-weight:600;
+  padding:12px 16px; border-radius:12px; transition:0.25s ease; color:#000;
+}
+.btn-primary:hover { transform:translateY(-2px); opacity:0.95; color:#000; }
+.btn-success { border-radius:12px; font-weight:600; }
+#successMessage { color:#22c55e; font-weight:600; }
+#errorMessage   { color:#ef4444; font-weight:600; }
+</style>
+
+<section class="contact-section" style="margin-top:6%;">
+
+  <div class="section-header">
+    <h2 class="section-title">Contact <b>Support</b></h2>
+    <p>We're available 24/7 to assist with accounts, investments, and withdrawals.</p>
+  </div>
+
+  <div class="contact-grid">
+
+    <!-- LEFT: Contact info + WhatsApp -->
+    <div class="contact-card">
+      <h3 style="font-weight:800; margin-bottom:20px;">
+        <span style="color:hsl(40 54% 56%);">Get in Touch</span>
+      </h3>
+      <p style="color:rgba(255,255,255,0.7); margin-bottom:25px;">
+        Our support team responds quickly to ensure a smooth experience.
+      </p>
+
+      <div style="margin-bottom:15px;">
+        <small>Email</small>
+        <div class="value">supportblackrock@gmail.com</div>
+      </div>
+      <div style="margin-bottom:15px;">
+        <small>Response Time</small>
+        <div class="value">Within 24 hours</div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <small>Availability</small>
+        <div class="value">24/7 Worldwide</div>
+      </div>
+
+      <!-- WhatsApp button — URL injected from Django view (WHATSAPP_NUMBER setting) -->
+      <a class="btn btn-success w-100" href="https://wa.me/18625967401?text=Hello%20BlackRock%20Support%2C%20I%20need%20assistance"
+         target="_blank"
+         class="btn btn-success w-100">
+        💬 Chat on WhatsApp
+      </a>
+
+
+      {% if user.is_authenticated %}
+      <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.08);">
+        <small>Quick Links</small>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
+          <a href="{% url 'dashboard:home' %}"
+             style="color:hsl(40 54% 56%);font-size:13px;">→ My Dashboard</a>
+          <a href="{% url 'kyc:submit' %}"
+             style="color:hsl(40 54% 56%);font-size:13px;">→ KYC Verification</a>
+          <a href="{% url 'transactions:deposit' %}"
+             style="color:hsl(40 54% 56%);font-size:13px;">→ Make a Deposit</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- RIGHT: Contact form (AJAX submission) -->
+    <div class="contact-card">
+      <h3 style="font-weight:800; margin-bottom:20px;">
+        <span style="color:hsl(40 54% 56%);">Send Message</span>
+      </h3>
+
+      <form id="contactForm" method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <input type="text" name="name" id="fieldName"
+                   class="form-control" placeholder="Full Name" required
+                   {% if user.is_authenticated %}value="{{ user.get_full_name }}"{% endif %}>
+          </div>
+          <div class="col-md-6">
+            <input type="email" name="email" id="fieldEmail"
+                   class="form-control" placeholder="Email Address" required
+                   {% if user.is_authenticated %}value="{{ user.email }}"{% endif %}>
+          </div>
+          <div class="col-12">
+            <input type="text" name="subject" id="fieldSubject"
+                   class="form-control" placeholder="Subject">
+          </div>
+          <div class="col-12">
+            <textarea name="message" id="fieldMessage" rows="6"
+                      class="form-control"
+                      placeholder="Write your message..." required></textarea>
+          </div>
+          <div class="col-12">
+            <button type="submit" id="submitBtn" class="btn btn-primary w-100">
+              Send Message
+            </button>
+          </div>
+        </div>
+
+      </form>
+
+      <div id="successMessage" class="text-center mt-3 d-none">
+        ✅ Message sent! Your ticket reference: <span id='ticketRef'></span>. We'll respond within 24 hours.
+      </div>
+      <div id="errorMessage" class="text-center mt-3 d-none">
+        ❌ <span id="errorText">Something went wrong. Please try again.</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+{% block extra_js %}
+<script>
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  var form     = this;
+  var btn      = document.getElementById('submitBtn');
+  var successEl= document.getElementById('successMessage');
+  var errorEl  = document.getElementById('errorMessage');
+  var errorTxt = document.getElementById('errorText');
+
+  // Reset state
+  successEl.classList.add('d-none');
+  errorEl.classList.add('d-none');
+  btn.textContent = 'Sending…';
+  btn.disabled    = true;
+
+  try {
+    var response = await fetch(window.location.href, {
+      method:  'POST',
+      body:    new FormData(form),
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    });
+
+    var data = await response.json();
+
+    btn.textContent = 'Send Message';
+    btn.disabled    = false;
+
+    if (data.success) {
+      form.reset();
+      successEl.classList.remove('d-none');
+      if (data.ticket) {
+        var ref = document.getElementById('ticketRef');
+        if (ref) ref.textContent = data.ticket;
+      }
+      // Re-fill user fields after reset (if authenticated)
+      {% if user.is_authenticated %}
+      document.getElementById('fieldName').value  = '{{ user.get_full_name|escapejs }}';
+      document.getElementById('fieldEmail').value = '{{ user.email|escapejs }}';
+      {% endif %}
+    } else {
+      errorTxt.textContent = data.error || 'Something went wrong.';
+      errorEl.classList.remove('d-none');
+    }
+
+  } catch (err) {
+    btn.textContent = 'Send Message';
+    btn.disabled    = false;
+    errorTxt.textContent = 'Network error. Please check your connection and try again.';
+    errorEl.classList.remove('d-none');
+    console.error('Contact form error:', err);
+  }
+});
+</script>
+{% endblock %}
+
+{% endblock %}

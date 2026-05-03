@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Admin — Users{% endblock %}
+{% block page_title %}User Management{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>All Users</h1>
+  <p>{{ users.count }} registered accounts</p>
+</div>
+
+<div class="card fade-up-2">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Email</th><th>KYC</th><th>Balance</th><th>Joined</th><th>Detail</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u.get_full_name|default:u.username }}</td>
+          <td style="font-size:13px;" class="mono">{{ u.email }}</td>
+          <td>
+            {% with status=u.kyc_status %}
+            <span class="badge badge-{% if status == 'APPROVED' %}approved{% elif status == 'PENDING' %}pending{% elif status == 'REJECTED' %}rejected{% else %}cancelled{% endif %}">
+              {{ status }}
+            </span>
+            {% endwith %}
+          </td>
+          <td class="mono text-gold" style="font-weight:600;">
+            {% if u.wallet %}${{ u.wallet.balance|floatformat:2 }}{% else %}—{% endif %}
+          </td>
+          <td style="font-size:12px;color:var(--text-3);">{{ u.date_joined|date:"M d, Y" }}</td>
+          <td>
+            <a href="{% url 'adminpanel:user_detail' u.pk %}" class="btn btn-outline btn-sm">
+              <i class="fas fa-eye"></i> View
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">No users found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

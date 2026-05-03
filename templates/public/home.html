@@ -1,0 +1,938 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlackRock</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
+
+  <!-- CSS -->
+  {% load static %}
+<link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+</head>
+<body>
+
+<!-- Snow Background -->
+<div id="tsparticles"></div>
+
+<header class="navbar">
+  <div class="nav-container">
+
+    <a href="#" class="brand">
+      <img src="{% static 'C:\Users\Nwafor Augustine\Desktop\blackrock_project (6)\blackrock\static\core\images\logo.jpg' %}">
+      <span class="notranslate" style="margin: 0 3px;">BlackRock</span>
+    </a>
+
+    <nav class="nav" id="navMenu">
+      <a href="{% url 'public:home' %}">Home</a>
+        <a href="{% url 'public:about' %}">About</a>
+        <a href="{% url 'public:plan' %}">Plan</a>
+        <a href="{% url 'public:faq' %}">FAQ</a>
+        <a href="{% url 'public:blog' %}">Blog</a>
+        <a href="{% url 'public:certification' %}">Certification</a>
+        <a href="{% url 'public:contact' %}">Contact</a>
+    </nav>
+
+    <div class="controls">
+
+      <div class="translate-wrapper">
+        <div id="google_translate_element"></div>
+      </div>
+
+      <a href="{% url 'users:login' %}" class="user-icon" id="userBtn" title="Login">
+          <svg xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.8"
+              stroke="currentColor"
+              width="24"
+              height="24"
+              style="color: hsl(40 54% 56%);">
+
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 1 1 14.998 0A17.933 17.933 0 0 1 12 21.75Z"/>
+          </svg>
+      </a>
+
+      <button id="darkToggle">🌙</button>
+
+      <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+
+    </div>
+
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-container">
+    <div class="hero-content">
+      <h1>
+        Invest for Future in Stable Platform <span>and grow your money faster.</span>
+      </h1>
+
+      <p>
+        Invest with a trusted industry leader, professional, reliable, and built for your success.
+        Enjoy fast, exciting returns while we keep your investment secure.
+      </p>
+
+      <div class="hero-buttons">
+      <a href="{% url 'users:register' %}" class="btn primary">Sign Up</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HERO ALT -->
+<section class="hero hero--alt">
+  <div class="hero-container">
+
+    <div class="hero-left"></div>
+
+    <div class="hero-right">
+
+      <div class="hero-video">
+        <video autoplay
+           muted
+           loop
+           playsinline
+           preload="auto"
+           style="
+              width:100%;
+              height:100%;
+              object-fit:cover;
+              display:block;
+           ">
+
+        <source src="{% static 'core/videos/hero-video.mp4' %}" type="video/mp4">
+
+        Your browser does not support the video tag.
+    </video>
+      </div>
+
+      <div class="hero-content">
+        <h1>
+          About <span>Us</span>
+        </h1>
+
+        <p>
+          We are an international financial company engaged in investment activities, which are related to trading on financial markets and cryptocurrency exchanges performed by qualified professional traders.<br><br>
+
+          Our goal is to provide our investors with a reliable source of high income, while minimizing any possible risks and offering a high-quality service, allowing us to automate and simplify the relations between the investors and the trustees. We work towards increasing your profit margin by profitable investment. We look forward to you being part of our community.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="{% url 'public:about' %}" class="btn primary">More Info</a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+
+
+{% load static %}
+
+
+{% block content %}
+
+<section class="package-section" style="margin-top: 6%;">
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="section-header text-center">
+      <h2 class="section-title">
+        <span>Investment</span> <b>Plans</b>
+      </h2>
+      <p>
+        To make a solid investment, you have to know where you are investing.
+        Find a plan which is best for you.
+      </p>
+    </div>
+
+    <!-- GRID — fully dynamic from InvestmentPlan model -->
+    <div class="package-grid">
+
+      {% for plan in plans %}
+      <div class="package-card text-center bg_img"
+           style="background-image: url('https://waytosuccesstrade.ltd/assets/templates/bit_gold/images/bg/bg-4.png');">
+
+        <!-- PLAN NAME -->
+        <h4 class="package-card__title">{{ plan.name }}</h4>
+
+        <!-- FEATURES -->
+        <ul class="package-card__features">
+          <li>Return <strong>{{ plan.interest }}%</strong></li>
+          <hr>
+          <li>After <strong>{{ plan.duration }}</strong></li>
+          <hr>
+          <li>
+            Total <strong>{{ plan.interest }}%</strong>
+            + <span class="badge">Capital</span>
+          </li>
+          <hr>
+          <li>Compound interest available</li>
+          <hr>
+          <li>Hold capital &amp; reinvest</li>
+          <hr>
+          {% if plan.description %}
+          <li>{{ plan.description }}</li>
+          <hr>
+          {% endif %}
+        </ul>
+
+        <!-- RANGE — from database -->
+        <div class="package-card__range">
+          ${{ plan.min_amount|floatformat:0 }} —
+          {% if plan.max_amount %}
+            ${{ plan.max_amount|floatformat:0 }}
+          {% else %}
+            Unlimited
+          {% endif %}
+        </div>
+
+        <!-- INVEST BUTTON -->
+        {% if user_authenticated %}
+          {# Authenticated: open invest modal pre-filled with this plan #}
+          <a href="javascript:void(0)"
+             class="btn-invest"
+             data-bs-toggle="modal"
+             data-bs-target="#investModal"
+             data-plan='{
+               "id":       "{{ plan.id }}",
+               "name":     "{{ plan.name|escapejs }}",
+               "min":      "{{ plan.min_amount }}",
+               "max":      "{{ plan.max_amount|default:'' }}",
+               "interest": "{{ plan.interest }}",
+               "duration": "{{ plan.duration|escapejs }}"
+             }'>
+            Invest Now
+          </a>
+        {% else %}
+          {# Guest: go to register page #}
+          <a href="{% url 'users:register' %}" class="btn-invest">
+            Get Started
+          </a>
+        {% endif %}
+
+      </div>
+      {% empty %}
+      <div class="text-center" style="grid-column:1/-1; padding:60px 0; color:rgba(255,255,255,0.5);">
+        <p style="font-size:18px;">No investment plans available at this time.</p>
+        <p style="font-size:14px;">Please check back soon or contact support.</p>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ── INVEST MODAL (only shown to authenticated users) ──────────────── -->
+{% if user_authenticated %}
+<div class="modal fade" id="investModal" tabindex="-1" aria-labelledby="investModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content"
+         style="background:rgba(15,23,42,0.97);border:1px solid rgba(201,168,76,0.25);border-radius:16px;">
+
+      <div class="modal-header" style="border-bottom:1px solid rgba(255,255,255,0.08);">
+        <h5 class="modal-title" id="investModalLabel"
+            style="color:hsl(40 54% 56%);font-weight:800;">
+          Invest in <span id="modalPlanName">Plan</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body" style="padding:24px;">
+
+        <!-- Plan summary -->
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:16px;margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span style="color:rgba(255,255,255,0.6);font-size:13px;">Return</span>
+            <strong id="modalInterest" style="color:hsl(40 54% 56%);"></strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span style="color:rgba(255,255,255,0.6);font-size:13px;">Duration</span>
+            <strong id="modalDuration" style="color:#fff;"></strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:rgba(255,255,255,0.6);font-size:13px;">Investment Range</span>
+            <strong id="modalRange" style="color:#fff;font-size:13px;"></strong>
+          </div>
+        </div>
+
+        <!-- KYC warning if not verified -->
+        {% if not request.user.kyc_approved %}
+        <div style="background:rgba(240,165,0,0.1);border:1px solid rgba(240,165,0,0.3);
+                    border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#f0a500;">
+          ⚠️ <strong>KYC Required:</strong> Complete identity verification to make investments.
+          <a href="{% url 'kyc:submit' %}" style="color:#f0a500;text-decoration:underline;">Verify now →</a>
+        </div>
+        {% endif %}
+
+        <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:16px;">
+          To invest in this plan, proceed to make a deposit. Your deposit will be
+          linked to this investment plan upon admin approval.
+        </p>
+
+        <a id="modalDepositBtn"
+           href="{% url 'transactions:deposit' %}"
+           class="btn w-100"
+           style="background:hsl(40 54% 56%);color:#000;font-weight:700;
+                  border-radius:10px;padding:12px;font-size:15px;">
+          Proceed to Deposit →
+        </a>
+
+        <div style="text-align:center;margin-top:12px;">
+          <a href="{% url 'wallet:wallet' %}" style="color:rgba(255,255,255,0.5);font-size:12px;">
+            View my wallet balance first
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Populate modal with plan data when "Invest Now" is clicked
+document.querySelectorAll('[data-plan]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var plan = JSON.parse(this.dataset.plan);
+    document.getElementById('modalPlanName').textContent  = plan.name;
+    document.getElementById('modalInterest').textContent  = plan.interest + '%';
+    document.getElementById('modalDuration').textContent  = plan.duration;
+    var maxStr = plan.max ? '$' + parseFloat(plan.max).toLocaleString() : 'Unlimited';
+    document.getElementById('modalRange').textContent =
+      '$' + parseFloat(plan.min).toLocaleString() + ' — ' + maxStr;
+
+    // Pass plan name to deposit page via URL param
+    var depositUrl = "{% url 'transactions:deposit' %}?plan=" + encodeURIComponent(plan.name);
+    document.getElementById('modalDepositBtn').href = depositUrl;
+  });
+});
+</script>
+{% endif %}
+
+{% endblock %}
+
+
+
+
+
+
+<section class="features-section">
+  <div class="container">
+
+    <div class="section-header text-center">
+      <h2 class="section-title">
+        <span>Why Choose</span> <b>WayToSuccess</b>
+      </h2>
+      <p>
+        Our goal is to provide investors with a reliable source of high income while minimizing risk and ensuring quality service.
+      </p>
+    </div>
+
+    <div class="features-grid">
+
+      <!-- CARD -->
+      <div class="feature-card">
+        <div class="feature-icon"><i class="las la-copy"></i></div>
+        <h4>Legal Company</h4>
+        <p>We operate legally and are certified to run investment services safely.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="las la-lock"></i></div>
+        <h4>High Reliability</h4>
+        <p>Trusted by thousands with strong security systems and risk control.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="las la-user-lock"></i></div>
+        <h4>Anonymity</h4>
+        <p>Secure crypto-based transactions with user privacy protection.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="las la-shipping-fast"></i></div>
+        <h4>Quick Withdrawal</h4>
+        <p>Fast withdrawals with low minimum limits and high maximum capacity.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="las la-link"></i></div>
+        <h4>Referral Program</h4>
+        <p>Earn extra income by referring others to the platform.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="las la-headset"></i></div>
+        <h4>24/7 Support</h4>
+        <p>Always available support via email and Telegram.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="las la-server"></i></div>
+        <h4>Dedicated Server</h4>
+        <p>High-performance dedicated infrastructure for stability.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="lab la-expeditedssl"></i></div>
+        <h4>SSL Secured</h4>
+        <p>Encrypted security ensures safe and verified communication.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="las la-shield-alt"></i></div>
+        <h4>DDOS Protection</h4>
+        <p>Advanced protection against attacks and system downtime.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="compare">
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="compare-header text-center">
+      <h5 class="section-title">Live <b>Investors Transactions</b></h5>
+        <p>
+            You could verify the transactions on blockchain.  
+        </p>
+
+      <div class="trsTabs">
+        <button class="tab active" id="withdrawTab">Withdrawals</button>
+        <button class="tab" id="investTab">Investments</button>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="transaction-table">
+
+      <!-- WITHDRAWALS (DEFAULT) -->
+      <div id="withdrawals">
+
+        <div class="transaction-row">
+          <div class="tx-left">
+            <div class="tx-name">Priex65</div>
+            <div class="tx-time">2023-02-18, 00:42</div>
+            <div class="txid">0x3087...4a7beb</div>
+          </div>
+
+          <div class="tx-center"></div>
+
+          <div class="tx-right">
+            <div class="tx-coin">Bitcoin</div>
+            <div class="tx-amount">$38.15</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- INVESTMENTS (HIDDEN) -->
+      <div id="investments" style="display:none;">
+
+        <div class="transaction-row">
+          <div class="tx-left">
+            <div class="tx-name">Saramllk</div>
+            <div class="tx-time">2023-02-18, 00:33</div>
+            <div class="txid">0x2dd9...d83d5f</div>
+          </div>
+
+          <div class="tx-center"></div>
+
+          <div class="tx-right">
+            <div class="tx-coin">Ethereum</div>
+            <div class="tx-amount">$250.00</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<section class="ceo-section">
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="ceo-header">
+      <h2>Leadership</h2>
+      <p>Trusted vision behind the platform</p>
+    </div>
+
+    <!-- CARD -->
+    <div class="ceo-card">
+
+      <!-- LEFT: PROFILE -->
+      <div class="ceo-profile">
+        <div class="ceo-avatar">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTF6XAG-p9CmvM61pNhHwTP57kifku_SOdEcw&s" alt="CEO">
+        </div>
+
+        <div class="ceo-info">
+          <h3>Zorik Noshadi</h3>
+          <span>Chief Executive Officer</span>
+        </div>
+      </div>
+
+      <!-- CENTER: BIO -->
+      <div class="ceo-bio">
+        <h4>About</h4>
+        <p>
+          Qualified economist with over 25 years of experience in global investment markets.
+          Focused on building secure, scalable financial systems and helping users grow wealth through modern digital assets.
+        </p>
+
+        <div class="ceo-quote">
+          “Investing puts money to work. The only reason to save money is to invest it.”
+        </div>
+      </div>
+
+      <!-- RIGHT: STATS -->
+      <div class="ceo-stats">
+
+        <div class="stat">
+          <span class="num">25+</span>
+          <span class="label">Years Experience</span>
+        </div>
+
+        <div class="stat">
+          <span class="num">12+</span>
+          <span class="label">Investment Firms</span>
+        </div>
+
+        <div class="stat">
+          <span class="num">98%</span>
+          <span class="label">Client Trust</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section class="faq-section pt-120 pb-120">
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="row justify-content-center">
+      <div class="col-lg-6 text-center">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="font-weight-normal">Frequently Asked</span>
+            <b style="color: hsl(40 54% 56%);" class="base--color">Questions</b>
+          </h2>
+          <p>
+            Everything you need to know about deposits, withdrawals, security, and how the platform works.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ ACCORDION -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <div class="accordion faq-accordion" id="faqAccordion">
+
+          <!-- ITEM 1 -->
+          <div class="faq-card">
+            <button class="faq-btn collapsed" data-bs-toggle="collapse" data-bs-target="#faq1">
+              <span>When can I deposit or withdraw funds?</span>
+              <i class="arrow"></i>
+            </button>
+
+            <div id="faq1" class="collapse" data-bs-parent="#faqAccordion">
+              <div class="faq-body">
+                Deposits and withdrawals are available 24/7. Withdrawals are only processed when your funds are not locked in active investments.
+              </div>
+            </div>
+          </div>
+
+          <!-- ITEM 2 -->
+          <div class="faq-card">
+            <button class="faq-btn collapsed" data-bs-toggle="collapse" data-bs-target="#faq2">
+              <span>How can I check my account balance?</span>
+              <i class="arrow"></i>
+            </button>
+
+            <div id="faq2" class="collapse" data-bs-parent="#faqAccordion">
+              <div class="faq-body">
+                Your balance is updated in real time and visible directly on your dashboard after login.
+              </div>
+            </div>
+          </div>
+
+          <!-- ITEM 3 -->
+          <div class="faq-card">
+            <button class="faq-btn collapsed" data-bs-toggle="collapse" data-bs-target="#faq3">
+              <span>I forgot my password. What should I do?</span>
+              <i class="arrow"></i>
+            </button>
+
+            <div id="faq3" class="collapse" data-bs-parent="#faqAccordion">
+              <div class="faq-body">
+                Use the password reset option on the login page and follow the instructions sent to your email.
+              </div>
+            </div>
+          </div>
+
+          <!-- ITEM 4 -->
+          <div class="faq-card">
+            <button class="faq-btn collapsed" data-bs-toggle="collapse" data-bs-target="#faq4">
+              <span>How will I know my withdrawal is successful?</span>
+              <i class="arrow"></i>
+            </button>
+
+            <div id="faq4" class="collapse" data-bs-parent="#faqAccordion">
+              <div class="faq-body">
+                You will receive a confirmation once your withdrawal is processed. You can also track it in your transaction history.
+              </div>
+            </div>
+          </div>
+
+          <!-- ITEM 5 -->
+          <div class="faq-card">
+            <button class="faq-btn collapsed" data-bs-toggle="collapse" data-bs-target="#faq5">
+              <span>Is there a withdrawal limit?</span>
+              <i class="arrow"></i>
+            </button>
+
+            <div id="faq5" class="collapse" data-bs-parent="#faqAccordion">
+              <div class="faq-body">
+                You can withdraw your available balance at any time, except funds locked in active investment cycles.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+<section class="binance-dashboard pt-120 pb-120">
+
+  <div class="container">
+
+    <!-- ================= TOP MARKET BAR ================= -->
+    <div class="binance-topbar">
+
+      <div class="market-box">
+        <span class="label">BTC/USDT</span>
+        <span class="value up">$68,420</span>
+        <span class="change up">+2.41%</span>
+      </div>
+
+      <div class="market-box">
+        <span class="label">ETH/USDT</span>
+        <span class="value up">$3,510</span>
+        <span class="change up">+1.12%</span>
+      </div>
+
+      <div class="market-box">
+        <span class="label">SOL/USDT</span>
+        <span class="value down">$142</span>
+        <span class="change down">-0.84%</span>
+      </div>
+
+      <div class="market-box">
+        <span class="label">GLOBAL CAP</span>
+        <span style="color: #848e9c;" class="value" >$2.3T</span>
+      </div>
+
+    </div>
+
+    <!-- ================= HEADER ================= -->
+    <div class="binance-header">
+      <h2 style="color: #848e9c;">Trading <span>Dashboard</span></h2>
+      <p style="color: #848e9c;">Live crypto market intelligence + news flow</p>
+
+      <!-- LIVE TICKER -->
+      <div class="binance-ticker">
+        <span class="live-dot"></span>
+        <div class="ticker-track" id="tickerTrack">
+          <span>BTC breakout confirmed</span>
+          <span>ETH network upgrade active</span>
+          <span>Market volatility increasing</span>
+          <span>AI tokens outperforming sector</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= DASHBOARD GRID ================= -->
+    <div class="binance-grid">
+
+      <!-- LEFT: ORDER BOOK STYLE NEWS -->
+      <div class="panel news-panel">
+
+        <div style="color: #f0b90b;"  class="panel-title">📊 <b>Market News Feed</b></div>
+
+        <div class="feed-item">
+          <span class="tag buy">BULLISH</span>
+          <div>
+            <h4><b style="color: #848e9c;">breaks resistance level</b> </h4>
+            <p>Institutional inflows push BTC higher</p>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <span class="tag buy">BULLISH</span>
+          <div>
+            <h4><b style="color: #848e9c;">Ethereum scaling upgrade live</b></h4>
+            <p>Gas fees drop significantly after update</p>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <span class="tag sell">BEARISH</span>
+          <div>
+            <h4><b style="color: #848e9c;">Market reacts to Fed signals</b></h4>
+            <p>Short-term volatility expected</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: MARKET ACTIVITY -->
+      <div class="panel activity-panel">
+
+        <div style="color: #f0b90b;" class="panel-title">⚡ <b>Live Activity</b> </div>
+
+        <div class="activity">
+          <span class="dot green"></span>
+          <span style="color: #848e9c;">BTC Buy Order Executed</span>
+        </div>
+
+        <div class="activity">
+          <span class="dot red"></span>
+          <span style="color: #848e9c;">ETH Sell Pressure Increased</span>
+        </div>
+
+        <div class="activity">
+          <span class="dot green"></span>
+          <span style="color: #848e9c;">Solana Accumulation Detected</span>
+        </div>
+
+        <div class="activity">
+          <span class="dot yellow"></span>
+          <span style="color: #848e9c;">AI Token Volume Spike</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<div class="subscribe-section">
+  <div class="subscribe-wrapper binance-subscribe bg_img" 
+       data-background="https://waytosuccesstrade.ltd/assets/images/frontend/subscribe/631ca2753add11662820981.jpg">
+
+    <div class="subscribe-overlay"></div>
+
+    <div class="container">
+
+      <div class="row align-items-center">
+
+        <!-- LEFT SIDE -->
+        <div class="col-lg-5">
+          <div class="subscribe-text">
+
+            <h2 style="color: #848e9c;" class="title">
+              <b>Join the </b><span>Crypto Intelligence Feed</span>
+            </h2>
+
+            <p><b style="color: #848e9c;">
+              Get real-time Bitcoin signals, market alerts, and trading insights — 
+              just like Binance professionals use.
+              </b>
+            </p>
+
+            <div class="subscribe-badges">
+              <span style="color: #848e9c;">⚡ <b>Real-time alerts</b></span>
+              <span style="color: #848e9c;">🔐 <b>No spam</b></span>
+              <span style="color: #848e9c;">📊 <b>Market insights</b></span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="col-lg-7 mt-lg-0 mt-4">
+
+          <form class="subscribe-form" id="cryptoSubscribeForm">
+
+            <input 
+              type="email" 
+              class="form-control"
+              name="email" 
+              placeholder="Sign up your email for live crypto alerts"
+              required
+            >
+
+            <button type="submit" class="subscribe-btn">
+              <i class="las la-paper-plane"></i>
+              Subscribe
+            </button>
+
+          </form>
+
+          <div class="subscribe-footer">
+            🔒 Your data is protected • Unsubscribe anytime
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer class="fintech-footer">
+
+  <!-- TOP GLOW LINE -->
+  <div class="footer-glow"></div>
+
+  <div class="container">
+
+    <!-- GRID -->
+    <div class="footer-grid">
+
+      <!-- BRAND -->
+      <div class="footer-col brand">
+      <img src="{% static 'C:\Users\Nwafor Augustine\Desktop\blackrock_project (6)\blackrock\static\core\images\logo.jpg' %}">
+
+        <p>
+          A next-generation crypto trading platform built for live market intelligence,
+          portfolio tracking, and high-speed execution.
+        </p>
+
+        <div class="trust-badges">
+          <span>🔒 Secured</span>
+          <span>⚡ Real-time</span>
+          <span>📊 Market Data</span>
+        </div>
+      </div>
+
+      <!-- COMPANY -->
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Plan</a>
+        <a href="#">Blog</a>
+        <a href="#">Certification</a>
+        <a href="#">PDF</a>
+        <a href="#">Contact</a>
+      </div>
+
+      <!-- MARKET -->
+      <div class="footer-col">
+        <h4>Market</h4>
+        <a href="#">Live Prices</a>
+        <a href="#">Crypto Charts</a>
+        <a href="#">Signals</a>
+        <a href="#">API</a>
+      </div>
+
+      <!-- COMMUNITY -->
+      <div class="footer-col">
+        <h4>Community</h4>
+        <a href="https://telegram.org/" target="_blank">Telegram</a>
+        <a href="#">Facebook</a>
+        <!-- <a href="#">Discord</a> -->
+
+        <div class="live-indicator">
+          <span class="dot"></span>
+          System Online
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STRIP -->
+  <!-- <div class="footer-strip">
+    <div class="container">
+
+      <div class="pdf-links">
+        <span>Docs:</span>
+        <a href="PDF/English.pdf">EN</a>
+        <a href="PDF/Spanish.pdf">ES</a>
+        <a href="PDF/Portuguese.pdf">PT</a>
+        <a href="PDF/Chinese.pdf">CN</a>
+        <a href="PDF/Arabic.pdf">AR</a>
+      </div>
+
+    </div>
+  </div> -->
+
+  <!-- BOTTOM -->
+  <div class="footer-bottom">
+    <div class="container">
+
+      <div class="left">
+        © <script>document.write(new Date().getFullYear());</script> <span class="notranslate" style="margin: 0 5px;">BlackRock</span> Trade
+      </div>
+
+      <div class="right">
+        <a href="https://www.blockchain.com/explorer/charts/n-payments" target="_blank">Payouts</a>
+        
+      </div>
+
+    </div>
+  </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+<script src="{% static 'core/js/script.js' %}"></script>
+  <!-- GOOGLE TRANSLATOR -->
+      <!-- INIT -->
+    <script>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          { pageLanguage: 'en' },
+          'google_translate_element'
+        );
+      }
+      </script>  
+      <!-- CDN -->
+      <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>  
+
+
+
+</body>
+</html>

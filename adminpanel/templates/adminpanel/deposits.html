@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}Admin — Deposits{% endblock %}
+{% block page_title %}Manage Deposits{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Deposit Requests</h1>
+  <p>Review, approve, or reject user deposit requests</p>
+</div>
+
+<!-- Filters -->
+<div class="card mb-24 fade-up-2">
+  <form method="get" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+    <div>
+      <label class="form-label">Status Filter</label>
+      <select name="status" class="form-control form-select" style="width:180px;" onchange="this.form.submit()">
+        <option value="">All Statuses</option>
+        {% for val, label in status_choices %}
+        <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% if selected_status %}
+    <a href="{% url 'adminpanel:deposits' %}" class="btn btn-outline btn-sm">Clear</a>
+    {% endif %}
+  </form>
+</div>
+
+<div class="card fade-up-3">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Reference</th><th>User</th><th>Amount</th><th>Method</th>
+          <th>TX Hash</th><th>Proof</th><th>Status</th><th>Date</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for dep in deposits %}
+        <tr>
+          <td class="mono" style="font-size:12px;">{{ dep.reference }}</td>
+          <td>
+            <a href="{% url 'adminpanel:user_detail' dep.user.pk %}" class="text-gold">{{ dep.user.email }}</a>
+          </td>
+          <td class="mono" style="font-weight:600;color:var(--green);">${{ dep.amount|floatformat:2 }}</td>
+          <td style="font-size:12px;">{% if dep.payment_method %}{{ dep.payment_method.display_name }}{% else %}—{% endif %}</td>
+          <td class="mono" style="font-size:11px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ dep.tx_hash }}">
+            {{ dep.tx_hash|default:"—" }}
+          </td>
+          <td>
+            {% if dep.payment_proof %}
+            <a href="{{ dep.payment_proof.url }}" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-image"></i> View</a>
+            {% else %}—{% endif %}
+          </td>
+          <td><span class="badge badge-{{ dep.status|lower }}">{{ dep.status }}</span></td>
+          <td style="font-size:12px;color:var(--text-3);">{{ dep.created_at|date:"M d H:i" }}</td>
+          <td>
+            {% if dep.status == 'PENDING' %}
+            <div style="display:flex;gap:6px;">
+              <form method="post" action="{% url 'adminpanel:deposit_action' dep.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="approve">
+                <input type="hidden" name="note" value="Approved by admin">
+                <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Approve deposit {{ dep.reference }}?')">
+                  <i class="fas fa-check"></i>
+                </button>
+              </form>
+              <form method="post" action="{% url 'adminpanel:deposit_action' dep.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reject">
+                <input type="hidden" name="note" value="Rejected by admin">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Reject deposit {{ dep.reference }}?')">
+                  <i class="fas fa-times"></i>
+                </button>
+              </form>
+            </div>
+            {% else %}
+            <span style="font-size:12px;color:var(--text-3);">{{ dep.admin_note|truncatechars:20|default:"—" }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-3);">
+          <i class="fas fa-inbox" style="font-size:28px;display:block;margin-bottom:10px;"></i>
+          No deposits found.
+        </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

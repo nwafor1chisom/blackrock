@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Admin — Referrals{% endblock %}
+{% block page_title %}Referral Bonuses{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Referral Bonuses</h1>
+  <p>Approve or reject pending referral bonus requests</p>
+</div>
+
+<div class="card mb-24 fade-up-2">
+  <form method="get" style="display:flex;gap:12px;">
+    <div>
+      <label class="form-label">Status</label>
+      <select name="status" class="form-control form-select" style="width:180px;" onchange="this.form.submit()">
+        <option value="">All</option>
+        <option value="PENDING" {% if selected_status == 'PENDING' %}selected{% endif %}>Pending</option>
+        <option value="APPROVED" {% if selected_status == 'APPROVED' %}selected{% endif %}>Approved</option>
+        <option value="REJECTED" {% if selected_status == 'REJECTED' %}selected{% endif %}>Rejected</option>
+      </select>
+    </div>
+  </form>
+</div>
+
+<div class="card fade-up-3">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Referrer</th><th>Referred User</th><th>Amount</th><th>Status</th><th>Created</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for bonus in bonuses %}
+        <tr>
+          <td><a href="{% url 'adminpanel:user_detail' bonus.referrer.pk %}" class="text-gold">{{ bonus.referrer.email }}</a></td>
+          <td style="font-size:13px;">{{ bonus.referred_user.email }}</td>
+          <td class="mono text-green" style="font-weight:600;">+${{ bonus.amount|floatformat:2 }}</td>
+          <td><span class="badge badge-{{ bonus.status|lower }}">{{ bonus.status }}</span></td>
+          <td style="font-size:12px;color:var(--text-3);">{{ bonus.created_at|date:"M d, Y" }}</td>
+          <td>
+            {% if bonus.status == 'PENDING' %}
+            <div style="display:flex;gap:6px;">
+              <form method="post" action="{% url 'adminpanel:referral_action' bonus.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="approve">
+                <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Approve and credit this referral bonus?')">
+                  <i class="fas fa-check"></i> Approve
+                </button>
+              </form>
+              <form method="post" action="{% url 'adminpanel:referral_action' bonus.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reject">
+                <button type="submit" class="btn btn-danger btn-sm">
+                  <i class="fas fa-times"></i> Reject
+                </button>
+              </form>
+            </div>
+            {% else %}
+            <span style="font-size:12px;color:var(--text-3);">{{ bonus.approved_by.email|default:"—" }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">No referral bonuses found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

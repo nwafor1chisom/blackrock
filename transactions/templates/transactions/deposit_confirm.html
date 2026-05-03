@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Deposit Submitted{% endblock %}
+{% block page_title %}Deposit Submitted{% endblock %}
+{% block nav_deposit %}active{% endblock %}
+
+{% block content %}
+<div style="max-width:560px;margin:0 auto;" class="fade-up">
+  <div class="card" style="text-align:center;padding:48px 40px;">
+    <div style="width:72px;height:72px;background:rgba(39,196,131,0.12);border:2px solid rgba(39,196,131,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;color:var(--green);">
+      <i class="fas fa-check"></i>
+    </div>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:26px;margin-bottom:8px;">Deposit Request Submitted</h2>
+    <p style="color:var(--text-2);margin-bottom:28px;">Your deposit request is pending admin verification. You will be notified once it's reviewed.</p>
+
+    <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:left;margin-bottom:28px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">Reference</div>
+          <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--gold);margin-top:4px;">{{ txn.reference }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">Amount</div>
+          <div style="font-family:'Space Mono',monospace;font-size:13px;margin-top:4px;">${{ txn.amount|floatformat:2 }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">Method</div>
+          <div style="font-size:13px;margin-top:4px;">{% if txn.payment_method %}{{ txn.payment_method.display_name }}{% else %}—{% endif %}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">Status</div>
+          <div style="margin-top:4px;"><span class="badge badge-pending">PENDING</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="{% url 'transactions:history' %}" class="btn btn-outline"><i class="fas fa-list"></i> View All Transactions</a>
+      <a href="{% url 'dashboard:home' %}" class="btn btn-gold"><i class="fas fa-grid-2"></i> Back to Dashboard</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

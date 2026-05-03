@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}Refer & Earn{% endblock %}
+{% block page_title %}Refer & Earn{% endblock %}
+{% block nav_referral %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Refer & Earn</h1>
+  <p>Invite friends and earn referral bonuses (admin-approved)</p>
+</div>
+
+<!-- Stats -->
+<div class="stat-grid fade-up-2">
+  <div class="stat-card">
+    <i class="fas fa-share-nodes stat-icon"></i>
+    <div class="stat-label">Total Referrals</div>
+    <div class="stat-value gold">{{ total_referrals }}</div>
+    <div class="stat-sub">People you've invited</div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-check-circle stat-icon" style="color:var(--green);opacity:0.5;"></i>
+    <div class="stat-label">Approved Bonuses</div>
+    <div class="stat-value green">{{ approved_bonuses }}</div>
+    <div class="stat-sub">Credited to your wallet</div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-coins stat-icon"></i>
+    <div class="stat-label">Referral Balance</div>
+    <div class="stat-value" style="color:var(--blue);">${{ referral_balance|floatformat:2 }}</div>
+    <div class="stat-sub">Lifetime earnings</div>
+  </div>
+</div>
+
+<!-- Referral Link -->
+<div class="card mb-24 fade-up-3">
+  <div class="card-title"><i class="fas fa-link text-gold"></i> Your Referral Link</div>
+  <p style="font-size:13px;color:var(--text-2);margin-bottom:16px;">Share your unique referral link. When someone registers using your link, a referral bonus entry is created pending admin approval.</p>
+
+  <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <div style="flex:1;font-family:'Space Mono',monospace;font-size:13px;color:var(--gold);word-break:break-all;">{{ referral_link }}</div>
+    <button onclick="copyLink()" class="btn btn-gold btn-sm"><i class="fas fa-copy"></i> Copy Link</button>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap;">
+    <div style="font-size:13px;color:var(--text-2);">Your referral code:</div>
+    <div style="background:var(--gold-muted);border:1px solid var(--border);border-radius:6px;padding:4px 14px;font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--gold);letter-spacing:0.1em;">{{ referral_code }}</div>
+    <button onclick="copyCode()" class="btn btn-outline btn-sm"><i class="fas fa-copy"></i> Copy Code</button>
+  </div>
+
+  <div class="alert alert-info" style="margin-top:16px;">
+    <i class="fas fa-info-circle"></i>
+    <span>Referral bonuses are manually reviewed and approved by our admin team. No automatic rewards are generated.</span>
+  </div>
+</div>
+
+<div class="grid-2 fade-up-4" style="gap:24px;">
+  <!-- People you've referred -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-users text-gold"></i> Your Referrals ({{ total_referrals }})</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Joined</th></tr></thead>
+        <tbody>
+          {% for ref in referrals %}
+          <tr>
+            <td>{{ ref.get_full_name|default:ref.username }}</td>
+            <td style="font-size:12px;color:var(--text-2);">{{ ref.email }}</td>
+            <td style="font-size:12px;color:var(--text-3);">{{ ref.date_joined|date:"M d, Y" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" style="text-align:center;padding:32px;color:var(--text-3);">
+            <i class="fas fa-user-plus" style="font-size:24px;display:block;margin-bottom:10px;"></i>
+            No referrals yet. Share your link!
+          </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Bonus history -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-gift text-gold"></i> Bonus History</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Referred</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>
+          {% for bonus in bonuses %}
+          <tr>
+            <td style="font-size:12px;">{{ bonus.referred_user.email }}</td>
+            <td class="mono text-green" style="font-weight:600;">+${{ bonus.amount|floatformat:2 }}</td>
+            <td><span class="badge badge-{{ bonus.status|lower }}">{{ bonus.status }}</span></td>
+            <td style="font-size:12px;color:var(--text-3);">{{ bonus.created_at|date:"M d, Y" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-3);">No bonuses yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+  function copyLink() {
+    navigator.clipboard.writeText('{{ referral_link }}').then(() => {
+      alert('Referral link copied to clipboard!');
+    });
+  }
+  function copyCode() {
+    navigator.clipboard.writeText('{{ referral_code }}').then(() => {
+      alert('Referral code copied!');
+    });
+  }
+</script>
+{% endblock %}
+{% endblock %}

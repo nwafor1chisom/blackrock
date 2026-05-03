@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Register{% endblock %}
+
+{% block auth_content %}
+<style>
+  .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); padding: 40px 20px; }
+  .register-card {
+    width: 100%; max-width: 560px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 44px 48px;
+  }
+  .register-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+  .register-logo .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #000;
+  }
+  .register-logo span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+  }
+  @media (max-width: 600px) { .register-card { padding: 28px 20px; } }
+
+  .brand{
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+}
+
+</style>
+
+<div class="auth-page">
+  <div class="register-card fade-up">
+    <div class="register-logo">
+     <img class="brand" src="{% static 'core/images/logo.jpg' %}" alt="Logo">
+      <span>BLACKROCK</span>
+    </div>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:26px;margin-bottom:4px;">Create Account</h2>
+    <p style="color:var(--text-2);font-size:14px;margin-bottom:28px;">Join the BLACKROCK platform</p>
+
+    {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}"><i class="fas fa-info-circle"></i> {{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'users:register' %}">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="alert alert-error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" name="first_name" class="form-control" placeholder="John" value="{{ form.first_name.value|default:'' }}" required>
+          {% if form.first_name.errors %}<div class="form-error">{{ form.first_name.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" name="last_name" class="form-control" placeholder="Doe" value="{{ form.last_name.value|default:'' }}" required>
+          {% if form.last_name.errors %}<div class="form-error">{{ form.last_name.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-control" placeholder="you@example.com" value="{{ form.email.value|default:'' }}" required>
+        {% if form.email.errors %}<div class="form-error">{{ form.email.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" placeholder="username" value="{{ form.username.value|default:'' }}" required>
+        {% if form.username.errors %}<div class="form-error">{{ form.username.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="text" name="phone_number" class="form-control" placeholder="+1 555 000 0000" value="{{ form.phone_number.value|default:'' }}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Country</label>
+          <input type="text" name="country" class="form-control" placeholder="United States" value="{{ form.country.value|default:'' }}">
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" name="password1" class="form-control" placeholder="••••••••" required>
+          {% if form.password1.errors %}<div class="form-error">{{ form.password1.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" name="password2" class="form-control" placeholder="••••••••" required>
+          {% if form.password2.errors %}<div class="form-error">{{ form.password2.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Referral Code <span style="color:var(--text-3);font-weight:400;">(optional)</span></label>
+        <input type="text" name="referral_code" class="form-control" placeholder="Enter referral code" value="{{ request.GET.ref|default:'' }}">
+        {% if form.referral_code.errors %}<div class="form-error">{{ form.referral_code.errors.0 }}</div>{% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-gold btn-block btn-lg" style="margin-top:8px;">
+        <i class="fas fa-user-plus"></i> Create Account
+      </button>
+    </form>
+
+    <div style="text-align:center;margin-top:24px;font-size:14px;color:var(--text-2);">
+      Already have an account? <a href="{% url 'users:login' %}">Sign In</a>
+    </div>
+    <div style="text-align:center;margin-top:12px;">
+        <a href="{% url 'public:home' %}" style="font-size:13px;color:var(--text-3);">
+          <i class="fas fa-arrow-left" style="font-size:11px;"></i> Back to Home
+        </a>
+      </div>
+  
+  </div>
+</div>
+<script>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          { pageLanguage: 'en' },
+          'google_translate_element'
+        );
+      }
+      </script>  
+      <!-- CDN -->
+      <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>  
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Transactions{% endblock %}
+{% block page_title %}Transaction History{% endblock %}
+{% block nav_txhistory %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Transaction History</h1>
+  <p>All your deposits and withdrawal requests</p>
+</div>
+
+<!-- Filters -->
+<div class="card mb-24 fade-up-2">
+  <form method="get" style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+    <div>
+      <label class="form-label">Type</label>
+      <select name="type" class="form-control form-select" style="width:160px;" onchange="this.form.submit()">
+        <option value="">All Types</option>
+        {% for val, label in type_choices %}
+        <option value="{{ val }}" {% if selected_type == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="form-label">Status</label>
+      <select name="status" class="form-control form-select" style="width:160px;" onchange="this.form.submit()">
+        <option value="">All Statuses</option>
+        {% for val, label in status_choices %}
+        <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% if selected_type or selected_status %}
+    <a href="{% url 'transactions:history' %}" class="btn btn-outline btn-sm">Clear Filters</a>
+    {% endif %}
+  </form>
+</div>
+
+<div class="card fade-up-3">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Reference</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Method / Network</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for txn in transactions %}
+        <tr>
+          <td class="mono">{{ txn.reference }}</td>
+          <td>
+            {% if txn.transaction_type == 'DEPOSIT' %}
+              <span style="color:var(--green);"><i class="fas fa-arrow-down"></i> Deposit</span>
+            {% else %}
+              <span style="color:var(--red);"><i class="fas fa-arrow-up"></i> Withdrawal</span>
+            {% endif %}
+          </td>
+          <td class="mono" style="font-weight:600;">${{ txn.amount|floatformat:2 }}</td>
+          <td style="font-size:12px;color:var(--text-2);">
+            {% if txn.payment_method %}{{ txn.payment_method.display_name }}{% elif txn.withdrawal_network %}{{ txn.withdrawal_network }}{% else %}—{% endif %}
+          </td>
+          <td><span class="badge badge-{{ txn.status|lower }}">{{ txn.status }}</span></td>
+          <td style="font-size:12px;color:var(--text-3);">{{ txn.created_at|date:"M d, Y H:i" }}</td>
+          <td style="font-size:12px;color:var(--text-3);">{{ txn.admin_note|default:"—"|truncatechars:30 }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-3);">
+          <i class="fas fa-inbox" style="font-size:28px;display:block;margin-bottom:10px;"></i>
+          No transactions found.
+        </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

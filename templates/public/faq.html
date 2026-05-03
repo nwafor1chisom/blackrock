@@ -1,0 +1,109 @@
+{% extends "public/base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="faq-section pt-120 pb-120" style="margin-top: 6%;">
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="row justify-content-center">
+      <div class="col-lg-6 text-center">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="font-weight-normal">Frequently Asked</span>
+            <b style="color: hsl(40 54% 56%);" class="base--color">Questions</b>
+          </h2>
+          <p>
+            Everything you need to know about deposits, withdrawals, security, and how the platform works.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ ACCORDION -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <div class="accordion faq-accordion" id="faqAccordion">
+
+          <!-- ITEM 1 -->
+          <div class="faq-card">
+            <button class="faq-btn collapsed" data-bs-toggle="collapse" data-bs-target="#faq1">
+              <span>When can I deposit or withdraw funds?</span>
+              <i class="arrow"></i>
+            </button>
+
+            <div id="faq1" class="collapse" data-bs-parent="#faqAccordion">
+              <div class="faq-body">
+                Deposits and withdrawals are available 24/7. Withdrawals are only processed when your funds are not locked in active investments.
+              </div>
+            </div>
+          </div>
+
+          <!-- ITEM 2 -->
+          <div class="faq-card">
+            <button class="faq-btn collapsed" data-bs-toggle="collapse" data-bs-target="#faq2">
+              <span>How can I check my account balance?</span>
+              <i class="arrow"></i>
+            </button>
+
+            <div id="faq2" class="collapse" data-bs-parent="#faqAccordion">
+              <div class="faq-body">
+                Your balance is updated in real time and visible directly on your dashboard after login.
+              </div>
+            </div>
+          </div>
+
+          <!-- ITEM 3 -->
+          <div class="faq-card">
+            <button class="faq-btn collapsed" data-bs-toggle="collapse" data-bs-target="#faq3">
+              <span>I forgot my password. What should I do?</span>
+              <i class="arrow"></i>
+            </button>
+
+            <div id="faq3" class="collapse" data-bs-parent="#faqAccordion">
+              <div class="faq-body">
+                Use the password reset option on the login page and follow the instructions sent to your email.
+              </div>
+            </div>
+          </div>
+
+          <!-- ITEM 4 -->
+          <div class="faq-card">
+            <button class="faq-btn collapsed" data-bs-toggle="collapse" data-bs-target="#faq4">
+              <span>How will I know my withdrawal is successful?</span>
+              <i class="arrow"></i>
+            </button>
+
+            <div id="faq4" class="collapse" data-bs-parent="#faqAccordion">
+              <div class="faq-body">
+                You will receive a confirmation once your withdrawal is processed. You can also track it in your transaction history.
+              </div>
+            </div>
+          </div>
+
+          <!-- ITEM 5 -->
+          <div class="faq-card">
+            <button class="faq-btn collapsed" data-bs-toggle="collapse" data-bs-target="#faq5">
+              <span>Is there a withdrawal limit?</span>
+              <i class="arrow"></i>
+            </button>
+
+            <div id="faq5" class="collapse" data-bs-parent="#faqAccordion">
+              <div class="faq-body">
+                You can withdraw your available balance at any time, except funds locked in active investment cycles.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}

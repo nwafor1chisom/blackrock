@@ -1,0 +1,187 @@
+{% extends "public/base.html" %}
+{% load static %}
+{% block title %}Investment Plans{% endblock %}
+
+{% block content %}
+
+<section class="package-section" style="margin-top: 6%;">
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="section-header text-center">
+      <h2 class="section-title">
+        <span>Investment</span> <b>Plans</b>
+      </h2>
+      <p>
+        To make a solid investment, you have to know where you are investing.
+        Find a plan which is best for you.
+      </p>
+    </div>
+
+    <!-- GRID — fully dynamic from InvestmentPlan model -->
+    <div class="package-grid">
+
+      {% for plan in plans %}
+      <div class="package-card text-center bg_img"
+           style="background-image: url('https://waytosuccesstrade.ltd/assets/templates/bit_gold/images/bg/bg-4.png');">
+
+        <!-- PLAN NAME -->
+        <h4 class="package-card__title">{{ plan.name }}</h4>
+
+        <!-- FEATURES -->
+        <ul class="package-card__features">
+          <li>Return <strong>{{ plan.interest }}%</strong></li>
+          <hr>
+          <li>After <strong>{{ plan.duration }}</strong></li>
+          <hr>
+          <li>
+            Total <strong>{{ plan.interest }}%</strong>
+            + <span class="badge">Capital</span>
+          </li>
+          <hr>
+          <li>Compound interest available</li>
+          <hr>
+          <li>Hold capital &amp; reinvest</li>
+          <hr>
+          {% if plan.description %}
+          <li>{{ plan.description }}</li>
+          <hr>
+          {% endif %}
+        </ul>
+
+        <!-- RANGE — from database -->
+        <div class="package-card__range">
+          ${{ plan.min_amount|floatformat:0 }} —
+          {% if plan.max_amount %}
+            ${{ plan.max_amount|floatformat:0 }}
+          {% else %}
+            Unlimited
+          {% endif %}
+        </div>
+
+        <!-- INVEST BUTTON -->
+        {% if user_authenticated %}
+          {# Authenticated: open invest modal pre-filled with this plan #}
+          <a href="javascript:void(0)"
+             class="btn-invest"
+             data-bs-toggle="modal"
+             data-bs-target="#investModal"
+             data-plan='{
+               "id":       "{{ plan.id }}",
+               "name":     "{{ plan.name|escapejs }}",
+               "min":      "{{ plan.min_amount }}",
+               "max":      "{{ plan.max_amount|default:'' }}",
+               "interest": "{{ plan.interest }}",
+               "duration": "{{ plan.duration|escapejs }}"
+             }'>
+            Invest Now
+          </a>
+        {% else %}
+          {# Guest: go to register page #}
+          <a href="{% url 'users:register' %}" class="btn-invest">
+            Get Started
+          </a>
+        {% endif %}
+
+      </div>
+      {% empty %}
+      <div class="text-center" style="grid-column:1/-1; padding:60px 0; color:rgba(255,255,255,0.5);">
+        <p style="font-size:18px;">No investment plans available at this time.</p>
+        <p style="font-size:14px;">Please check back soon or contact support.</p>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ── INVEST MODAL (only shown to authenticated users) ──────────────── -->
+{% if user_authenticated %}
+<div class="modal fade" id="investModal" tabindex="-1" aria-labelledby="investModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content"
+         style="background:rgba(15,23,42,0.97);border:1px solid rgba(201,168,76,0.25);border-radius:16px;">
+
+      <div class="modal-header" style="border-bottom:1px solid rgba(255,255,255,0.08);">
+        <h5 class="modal-title" id="investModalLabel"
+            style="color:hsl(40 54% 56%);font-weight:800;">
+          Invest in <span id="modalPlanName">Plan</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body" style="padding:24px;">
+
+        <!-- Plan summary -->
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:16px;margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span style="color:rgba(255,255,255,0.6);font-size:13px;">Return</span>
+            <strong id="modalInterest" style="color:hsl(40 54% 56%);"></strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span style="color:rgba(255,255,255,0.6);font-size:13px;">Duration</span>
+            <strong id="modalDuration" style="color:#fff;"></strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:rgba(255,255,255,0.6);font-size:13px;">Investment Range</span>
+            <strong id="modalRange" style="color:#fff;font-size:13px;"></strong>
+          </div>
+        </div>
+
+        <!-- KYC warning if not verified -->
+        {% if not request.user.kyc_approved %}
+        <div style="background:rgba(240,165,0,0.1);border:1px solid rgba(240,165,0,0.3);
+                    border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#f0a500;">
+          ⚠️ <strong>KYC Required:</strong> Complete identity verification to make investments.
+          <a href="{% url 'kyc:submit' %}" style="color:#f0a500;text-decoration:underline;">Verify now →</a>
+        </div>
+        {% endif %}
+
+        <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:16px;">
+          To invest in this plan, proceed to make a deposit. Your deposit will be
+          linked to this investment plan upon admin approval.
+        </p>
+
+        <a id="modalDepositBtn"
+           href="{% url 'transactions:deposit' %}"
+           class="btn w-100"
+           style="background:hsl(40 54% 56%);color:#000;font-weight:700;
+                  border-radius:10px;padding:12px;font-size:15px;">
+          Proceed to Deposit →
+        </a>
+
+        <div style="text-align:center;margin-top:12px;">
+          <a href="{% url 'wallet:wallet' %}" style="color:rgba(255,255,255,0.5);font-size:12px;">
+            View my wallet balance first
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Populate modal with plan data when "Invest Now" is clicked
+document.querySelectorAll('[data-plan]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var plan = JSON.parse(this.dataset.plan);
+    document.getElementById('modalPlanName').textContent  = plan.name;
+    document.getElementById('modalInterest').textContent  = plan.interest + '%';
+    document.getElementById('modalDuration').textContent  = plan.duration;
+    var maxStr = plan.max ? '$' + parseFloat(plan.max).toLocaleString() : 'Unlimited';
+    document.getElementById('modalRange').textContent =
+      '$' + parseFloat(plan.min).toLocaleString() + ' — ' + maxStr;
+
+    // Pass plan name to deposit page via URL param
+    var depositUrl = "{% url 'transactions:deposit' %}?plan=" + encodeURIComponent(plan.name);
+    document.getElementById('modalDepositBtn').href = depositUrl;
+  });
+});
+</script>
+{% endif %}
+
+{% endblock %}

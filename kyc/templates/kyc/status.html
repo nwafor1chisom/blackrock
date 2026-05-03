@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}KYC Status{% endblock %}
+{% block page_title %}KYC Status{% endblock %}
+{% block nav_kyc %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Verification Status</h1>
+  <p>Track your identity verification progress</p>
+</div>
+
+<div style="max-width:640px;" class="fade-up-2">
+  {% if not kyc %}
+  <div class="card" style="text-align:center;padding:56px 40px;">
+    <div style="width:72px;height:72px;background:var(--gold-muted);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:30px;color:var(--gold);">
+      <i class="fas fa-id-card"></i>
+    </div>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:8px;">Not Submitted</h2>
+    <p style="color:var(--text-2);margin-bottom:28px;">You haven't submitted KYC documents yet. Complete verification to unlock withdrawals.</p>
+    <a href="{% url 'kyc:submit' %}" class="btn btn-gold btn-lg"><i class="fas fa-upload"></i> Submit KYC Now</a>
+  </div>
+
+  {% elif kyc.status == 'PENDING' %}
+  <div class="card" style="text-align:center;padding:48px 40px;">
+    <div style="width:72px;height:72px;background:rgba(240,165,0,0.12);border:2px solid rgba(240,165,0,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;color:var(--amber);">
+      <i class="fas fa-clock"></i>
+    </div>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:8px;">Under Review</h2>
+    <p style="color:var(--text-2);margin-bottom:28px;">Your documents have been submitted and are being reviewed by our compliance team.</p>
+    <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:left;margin-bottom:24px;">
+      <div class="grid-2" style="gap:14px;">
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">Name</div>
+          <div style="font-size:14px;margin-top:4px;">{{ kyc.full_legal_name }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">Document Type</div>
+          <div style="font-size:14px;margin-top:4px;">{{ kyc.get_document_type_display }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">Submitted</div>
+          <div style="font-size:14px;margin-top:4px;">{{ kyc.submitted_at|date:"M d, Y H:i" }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">Status</div>
+          <div style="margin-top:4px;"><span class="badge badge-pending"><i class="fas fa-clock"></i> Pending</span></div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-3);">Typical review time: 24–72 hours. Check back later.</p>
+  </div>
+
+  {% elif kyc.status == 'APPROVED' %}
+  <div class="card" style="text-align:center;padding:48px 40px;">
+    <div style="width:72px;height:72px;background:rgba(39,196,131,0.12);border:2px solid rgba(39,196,131,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;color:var(--green);">
+      <i class="fas fa-check"></i>
+    </div>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:8px;">Verified ✓</h2>
+    <p style="color:var(--text-2);margin-bottom:28px;">Your identity has been successfully verified. You now have full access to all platform features including withdrawals.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="{% url 'transactions:withdraw' %}" class="btn btn-gold"><i class="fas fa-arrow-up-from-bracket"></i> Make Withdrawal</a>
+      <a href="{% url 'dashboard:home' %}" class="btn btn-outline"><i class="fas fa-grid-2"></i> Dashboard</a>
+    </div>
+  </div>
+
+  {% elif kyc.status == 'REJECTED' %}
+  <div class="card" style="text-align:center;padding:48px 40px;">
+    <div style="width:72px;height:72px;background:rgba(224,82,82,0.12);border:2px solid rgba(224,82,82,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;color:var(--red);">
+      <i class="fas fa-times"></i>
+    </div>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:8px;">Verification Rejected</h2>
+    {% if kyc.rejection_reason %}
+    <div class="alert alert-error" style="text-align:left;margin-bottom:20px;">
+      <i class="fas fa-exclamation-circle"></i>
+      <div><strong>Reason:</strong> {{ kyc.rejection_reason }}</div>
+    </div>
+    {% endif %}
+    <p style="color:var(--text-2);margin-bottom:28px;">Please correct the issues and resubmit your documents.</p>
+    <a href="{% url 'kyc:submit' %}" class="btn btn-gold btn-lg"><i class="fas fa-redo"></i> Resubmit KYC</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

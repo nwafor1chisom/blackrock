@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block title %}KYC Verification{% endblock %}
+{% block page_title %}KYC Verification{% endblock %}
+{% block nav_kyc %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Identity Verification</h1>
+  <p>Complete KYC to unlock withdrawals and full platform access</p>
+</div>
+
+<div class="grid-2 fade-up-2" style="gap:24px;align-items:start;">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-id-card text-gold"></i> Submit KYC Documents</div>
+
+    {% if kyc and kyc.status == 'REJECTED' %}
+    <div class="alert alert-error mb-16">
+      <i class="fas fa-times-circle"></i>
+      <div>
+        <strong>Previous Submission Rejected</strong>
+        {% if kyc.rejection_reason %}<br><span style="font-size:13px;">Reason: {{ kyc.rejection_reason }}</span>{% endif %}
+        <br><span style="font-size:13px;">Please resubmit with correct documents.</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" action="{% url 'kyc:submit' %}">
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors }}</div>{% endif %}
+
+      <div class="form-group">
+        <label class="form-label">Full Legal Name</label>
+        <input type="text" name="full_legal_name" class="form-control"
+          placeholder="As it appears on your document"
+          value="{{ form.full_legal_name.value|default:'' }}" required>
+        {% if form.full_legal_name.errors %}<div class="form-error">{{ form.full_legal_name.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" name="date_of_birth" class="form-control"
+            value="{{ form.date_of_birth.value|default:'' }}" required>
+          {% if form.date_of_birth.errors %}<div class="form-error">{{ form.date_of_birth.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nationality</label>
+          <input type="text" name="nationality" class="form-control"
+            placeholder="Your nationality"
+            value="{{ form.nationality.value|default:'' }}" required>
+          {% if form.nationality.errors %}<div class="form-error">{{ form.nationality.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Residential Address</label>
+        <textarea name="address" class="form-control" rows="2"
+          placeholder="Full residential address" required>{{ form.address.value|default:'' }}</textarea>
+        {% if form.address.errors %}<div class="form-error">{{ form.address.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Document Type</label>
+          <select name="document_type" class="form-control form-select" required>
+            <option value="">-- Select --</option>
+            <option value="PASSPORT" {% if form.document_type.value == 'PASSPORT' %}selected{% endif %}>Passport</option>
+            <option value="NATIONAL_ID" {% if form.document_type.value == 'NATIONAL_ID' %}selected{% endif %}>National ID</option>
+            <option value="DRIVERS_LICENSE" {% if form.document_type.value == 'DRIVERS_LICENSE' %}selected{% endif %}>Driver's License</option>
+          </select>
+          {% if form.document_type.errors %}<div class="form-error">{{ form.document_type.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Document Number</label>
+          <input type="text" name="document_number" class="form-control"
+            placeholder="ID / Passport number"
+            value="{{ form.document_number.value|default:'' }}" required>
+          {% if form.document_number.errors %}<div class="form-error">{{ form.document_number.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Document Front <span style="color:var(--red);">*</span></label>
+        <input type="file" name="document_front" class="form-control" accept="image/*,application/pdf" required style="padding:8px 12px;">
+        <div class="form-hint">Clear photo of front of document</div>
+        {% if form.document_front.errors %}<div class="form-error">{{ form.document_front.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Document Back <span style="color:var(--text-3);font-weight:400;">(optional)</span></label>
+        <input type="file" name="document_back" class="form-control" accept="image/*,application/pdf" style="padding:8px 12px;">
+        <div class="form-hint">Back of document if applicable</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Selfie Holding Document <span style="color:var(--text-3);font-weight:400;">(recommended)</span></label>
+        <input type="file" name="selfie_with_doc" class="form-control" accept="image/*" style="padding:8px 12px;">
+        <div class="form-hint">Photo of you holding your ID document</div>
+      </div>
+
+      <button type="submit" class="btn btn-gold btn-block btn-lg">
+        <i class="fas fa-upload"></i> Submit for Verification
+      </button>
+    </form>
+  </div>
+
+  <div>
+    <div class="card mb-24">
+      <div class="card-title"><i class="fas fa-shield-halved text-gold"></i> Why KYC?</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="display:flex;gap:12px;">
+          <i class="fas fa-check-circle" style="color:var(--green);margin-top:2px;flex-shrink:0;"></i>
+          <div><div style="font-size:14px;font-weight:500;">Unlock Withdrawals</div><div style="font-size:12px;color:var(--text-3);">KYC approval is mandatory before any withdrawal</div></div>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <i class="fas fa-check-circle" style="color:var(--green);margin-top:2px;flex-shrink:0;"></i>
+          <div><div style="font-size:14px;font-weight:500;">Security & Compliance</div><div style="font-size:12px;color:var(--text-3);">Protects your account and meets regulatory requirements</div></div>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <i class="fas fa-check-circle" style="color:var(--green);margin-top:2px;flex-shrink:0;"></i>
+          <div><div style="font-size:14px;font-weight:500;">Higher Limits</div><div style="font-size:12px;color:var(--text-3);">Verified users access higher transaction limits</div></div>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <i class="fas fa-check-circle" style="color:var(--green);margin-top:2px;flex-shrink:0;"></i>
+          <div><div style="font-size:14px;font-weight:500;">Data Privacy</div><div style="font-size:12px;color:var(--text-3);">Documents stored securely and never shared</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="fas fa-clock text-gold"></i> Processing Time</div>
+      <p style="font-size:13px;color:var(--text-2);line-height:1.8;">
+        KYC reviews are typically completed within <strong style="color:var(--gold);">24–72 hours</strong>.
+        Ensure documents are clear, legible, and not expired.
+        You will be notified of the outcome in your dashboard.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Admin — KYC Reviews{% endblock %}
+{% block page_title %}KYC Reviews{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>KYC Reviews</h1>
+  <p>Verify user identity documents</p>
+</div>
+
+<div class="card mb-24 fade-up-2">
+  <form method="get" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+    <div>
+      <label class="form-label">Status</label>
+      <select name="status" class="form-control form-select" style="width:180px;" onchange="this.form.submit()">
+        <option value="">All</option>
+        {% for val, label in status_choices %}
+        <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% if selected_status %}<a href="{% url 'adminpanel:kyc' %}" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+  </form>
+</div>
+
+<div class="card fade-up-3">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>User</th><th>Legal Name</th><th>Doc Type</th><th>Doc No.</th><th>Docs</th><th>Status</th><th>Submitted</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for kyc in profiles %}
+        <tr>
+          <td><a href="{% url 'adminpanel:user_detail' kyc.user.pk %}" class="text-gold">{{ kyc.user.email }}</a></td>
+          <td>{{ kyc.full_legal_name }}</td>
+          <td style="font-size:12px;">{{ kyc.get_document_type_display }}</td>
+          <td class="mono" style="font-size:12px;">{{ kyc.document_number }}</td>
+          <td>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              {% if kyc.document_front %}
+              <a href="{{ kyc.document_front.url }}" target="_blank" class="btn btn-outline btn-sm" title="Front">
+                <i class="fas fa-id-card"></i>
+              </a>
+              {% endif %}
+              {% if kyc.document_back %}
+              <a href="{{ kyc.document_back.url }}" target="_blank" class="btn btn-outline btn-sm" title="Back">
+                <i class="fas fa-id-card-clip"></i>
+              </a>
+              {% endif %}
+              {% if kyc.selfie_with_doc %}
+              <a href="{{ kyc.selfie_with_doc.url }}" target="_blank" class="btn btn-outline btn-sm" title="Selfie">
+                <i class="fas fa-camera"></i>
+              </a>
+              {% endif %}
+            </div>
+          </td>
+          <td><span class="badge badge-{{ kyc.status|lower }}">{{ kyc.get_status_display }}</span></td>
+          <td style="font-size:12px;color:var(--text-3);">{{ kyc.submitted_at|date:"M d, Y" }}</td>
+          <td>
+            {% if kyc.status == 'PENDING' %}
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <form method="post" action="{% url 'adminpanel:kyc_action' kyc.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="approve">
+                <button type="submit" class="btn btn-success btn-sm btn-block" onclick="return confirm('Approve KYC for {{ kyc.user.email }}?')">
+                  <i class="fas fa-check"></i> Approve
+                </button>
+              </form>
+              <form method="post" action="{% url 'adminpanel:kyc_action' kyc.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reject">
+                <input type="text" name="rejection_reason" class="form-control" placeholder="Rejection reason" style="margin-bottom:4px;font-size:12px;padding:6px 10px;">
+                <button type="submit" class="btn btn-danger btn-sm btn-block">
+                  <i class="fas fa-times"></i> Reject
+                </button>
+              </form>
+            </div>
+            {% else %}
+            <span style="font-size:12px;color:var(--text-3);">{{ kyc.rejection_reason|truncatechars:30|default:"—" }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-3);">
+          <i class="fas fa-id-card" style="font-size:28px;display:block;margin-bottom:10px;"></i>
+          No KYC submissions found.
+        </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}Admin Panel{% endblock %}
+{% block page_title %}Admin Panel{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Financial Governance Dashboard</h1>
+  <p>Platform overview and pending actions</p>
+</div>
+
+<!-- Alert badges for pending actions -->
+{% if pending_deposits or pending_withdrawals or pending_kyc or pending_referrals %}
+<div class="alert alert-warning fade-up-2">
+  <i class="fas fa-bell"></i>
+  <div>
+    <strong>Action Required:</strong>
+    {% if pending_deposits %}{{ pending_deposits }} pending deposit(s) &nbsp;{% endif %}
+    {% if pending_withdrawals %}{{ pending_withdrawals }} pending withdrawal(s) &nbsp;{% endif %}
+    {% if pending_kyc %}{{ pending_kyc }} pending KYC review(s) &nbsp;{% endif %}
+    {% if pending_referrals %}{{ pending_referrals }} pending referral bonus(es){% endif %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Stats -->
+<div class="stat-grid fade-up-2">
+  <div class="stat-card">
+    <i class="fas fa-users stat-icon"></i>
+    <div class="stat-label">Total Users</div>
+    <div class="stat-value gold">{{ total_users }}</div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-arrow-down stat-icon" style="color:var(--green);opacity:0.5;"></i>
+    <div class="stat-label">Total Deposited</div>
+    <div class="stat-value green">${{ total_deposited|floatformat:2 }}</div>
+    <div class="stat-sub">Approved deposits only</div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-arrow-up stat-icon" style="color:var(--red);opacity:0.5;"></i>
+    <div class="stat-label">Total Withdrawn</div>
+    <div class="stat-value red">${{ total_withdrawn|floatformat:2 }}</div>
+    <div class="stat-sub">Approved withdrawals only</div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-clock stat-icon" style="color:var(--amber);opacity:0.5;"></i>
+    <div class="stat-label">Pending Actions</div>
+    <div class="stat-value" style="color:var(--amber);">{{ pending_deposits|add:pending_withdrawals|add:pending_kyc }}</div>
+    <div class="stat-sub">Deposits, withdrawals, KYC</div>
+  </div>
+</div>
+
+<!-- Admin Navigation Cards -->
+<div class="grid-3 fade-up-3" style="margin-bottom:24px;">
+  <a href="{% url 'adminpanel:deposits' %}" style="text-decoration:none;">
+    <div class="card" style="cursor:pointer;transition:border-color 0.2s,transform 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <div style="width:40px;height:40px;background:rgba(39,196,131,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--green);font-size:18px;"><i class="fas fa-arrow-down-to-bracket"></i></div>
+        <div>
+          <div style="font-size:15px;font-weight:600;color:var(--text);">Deposits</div>
+          {% if pending_deposits %}<span class="badge badge-pending">{{ pending_deposits }} pending</span>{% endif %}
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text-3);">Review and approve/reject deposit requests</div>
+    </div>
+  </a>
+  <a href="{% url 'adminpanel:withdrawals' %}" style="text-decoration:none;">
+    <div class="card" style="cursor:pointer;transition:border-color 0.2s,transform 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <div style="width:40px;height:40px;background:rgba(224,82,82,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--red);font-size:18px;"><i class="fas fa-arrow-up-from-bracket"></i></div>
+        <div>
+          <div style="font-size:15px;font-weight:600;color:var(--text);">Withdrawals</div>
+          {% if pending_withdrawals %}<span class="badge badge-pending">{{ pending_withdrawals }} pending</span>{% endif %}
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text-3);">Manage withdrawal requests and releases</div>
+    </div>
+  </a>
+  <a href="{% url 'adminpanel:kyc' %}" style="text-decoration:none;">
+    <div class="card" style="cursor:pointer;transition:border-color 0.2s,transform 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <div style="width:40px;height:40px;background:rgba(74,158,255,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:18px;"><i class="fas fa-id-card"></i></div>
+        <div>
+          <div style="font-size:15px;font-weight:600;color:var(--text);">KYC Reviews</div>
+          {% if pending_kyc %}<span class="badge badge-pending">{{ pending_kyc }} pending</span>{% endif %}
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text-3);">Verify user identity documents</div>
+    </div>
+  </a>
+  <a href="{% url 'adminpanel:credit_bonus' %}" style="text-decoration:none;">
+    <div class="card" style="cursor:pointer;transition:border-color 0.2s,transform 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <div style="width:40px;height:40px;background:var(--gold-muted);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:18px;"><i class="fas fa-coins"></i></div>
+        <div><div style="font-size:15px;font-weight:600;color:var(--text);">Credit Bonus</div></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-3);">Manually issue profit bonuses to users</div>
+    </div>
+  </a>
+  <a href="{% url 'adminpanel:referrals' %}" style="text-decoration:none;">
+    <div class="card" style="cursor:pointer;transition:border-color 0.2s,transform 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <div style="width:40px;height:40px;background:rgba(74,158,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:18px;"><i class="fas fa-share-nodes"></i></div>
+        <div>
+          <div style="font-size:15px;font-weight:600;color:var(--text);">Referral Bonuses</div>
+          {% if pending_referrals %}<span class="badge badge-pending">{{ pending_referrals }} pending</span>{% endif %}
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text-3);">Approve or reject referral rewards</div>
+    </div>
+  </a>
+  <a href="{% url 'adminpanel:users' %}" style="text-decoration:none;">
+    <div class="card" style="cursor:pointer;transition:border-color 0.2s,transform 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform=''">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <div style="width:40px;height:40px;background:rgba(201,168,76,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:18px;"><i class="fas fa-users"></i></div>
+        <div><div style="font-size:15px;font-weight:600;color:var(--text);">User Management</div></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-3);">View all users and their accounts</div>
+    </div>
+  </a>
+</div>
+
+<!-- Recent Transactions -->
+<div class="card fade-up-4">
+  <div class="card-title"><i class="fas fa-receipt text-gold"></i> Recent Platform Transactions</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Reference</th><th>User</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        {% for txn in recent_txns %}
+        <tr>
+          <td class="mono" style="font-size:12px;">{{ txn.reference }}</td>
+          <td style="font-size:13px;">{{ txn.user.email }}</td>
+          <td>
+            {% if txn.transaction_type == 'DEPOSIT' %}
+            <span style="color:var(--green);font-size:12px;"><i class="fas fa-arrow-down"></i> Deposit</span>
+            {% else %}
+            <span style="color:var(--red);font-size:12px;"><i class="fas fa-arrow-up"></i> Withdrawal</span>
+            {% endif %}
+          </td>
+          <td class="mono" style="font-weight:600;">${{ txn.amount|floatformat:2 }}</td>
+          <td><span class="badge badge-{{ txn.status|lower }}">{{ txn.status }}</span></td>
+          <td style="font-size:12px;color:var(--text-3);">{{ txn.created_at|date:"M d, Y H:i" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

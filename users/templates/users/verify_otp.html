@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% block title %}Verify OTP{% endblock %}
+
+{% block auth_content %}
+<style>
+  :root {
+    --gold:#c9a84c; --gold-dark:#9a7a30; --gold-muted:rgba(201,168,76,0.12);
+    --bg:#0a0a0b; --bg-2:#111114; --bg-3:#18181c; --bg-4:#1f1f25;
+    --border:rgba(201,168,76,0.18); --border-subtle:rgba(255,255,255,0.06);
+    --text:#f0ece4; --text-2:#a89f93; --text-3:#6b6560;
+    --green:#27c483; --red:#e05252; --amber:#f0a500; --blue:#4a9eff;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',Arial,sans-serif; background:var(--bg); color:var(--text); }
+  .auth-page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+  .auth-card { width:100%; max-width:500px; background:var(--bg-2); border:1px solid var(--border); border-radius:16px; padding:48px; }
+  @media(max-width:540px){ .auth-card { padding:28px 20px; } }
+
+  .auth-logo { display:flex; align-items:center; gap:12px; margin-bottom:32px; }
+  .auth-logo .logo-icon { width:42px;height:42px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#000; }
+  .auth-logo span { font-family:Georgia,serif;font-size:22px;font-weight:700;letter-spacing:3px;color:var(--gold); }
+
+  /* Step bar */
+  .steps { display:flex;align-items:center;margin-bottom:32px; }
+  .step-dot { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:monospace;flex-shrink:0; }
+  .step-dot.done  { background:var(--green);color:#fff; }
+  .step-dot.active{ background:var(--gold);color:#000; }
+  .step-dot.idle  { background:var(--bg-3);border:1px solid var(--border);color:var(--text-3); }
+  .step-label     { font-size:11px;white-space:nowrap;margin-left:6px; }
+  .step-line      { flex:1;height:1px;background:var(--border);margin:0 8px; }
+  .step-line.done { background:var(--green); }
+
+  /* Alert */
+  .alert { padding:11px 15px;border-radius:8px;font-size:13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:9px;border:1px solid transparent; }
+  .alert-success{ background:rgba(39,196,131,.09);border-color:rgba(39,196,131,.25);color:var(--green); }
+  .alert-error  { background:rgba(224,82,82,.09);border-color:rgba(224,82,82,.25);color:var(--red); }
+  .alert-warning{ background:rgba(240,165,0,.09);border-color:rgba(240,165,0,.25);color:var(--amber); }
+  .alert-info   { background:rgba(74,158,255,.09);border-color:rgba(74,158,255,.25);color:var(--blue); }
+
+  /* OTP Boxes */
+  .otp-row { display:flex;gap:9px;justify-content:center;margin:22px 0; }
+  .otp-box {
+    width:52px;height:64px;border-radius:10px;
+    background:var(--bg-3);border:2px solid var(--border);
+    font-family:'Courier New',monospace;font-size:26px;font-weight:700;
+    color:var(--gold);text-align:center;outline:none;
+    transition:border-color .2s,box-shadow .2s;caret-color:var(--gold);
+  }
+  .otp-box:focus { border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-muted); }
+  .otp-box.filled{ border-color:var(--gold-dark); }
+  .otp-box.error { border-color:var(--red)!important; animation:shake .3s; }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-4px)} 60%{transform:translateX(4px)}
+  }
+  @media(max-width:400px){
+    .otp-box{width:42px;height:54px;font-size:22px;}
+    .otp-row{gap:6px;}
+  }
+
+  /* Countdown ring */
+  .timer-wrap { text-align:center; margin-bottom:6px; }
+  .timer-ring { position:relative;width:68px;height:68px;margin:0 auto 8px; }
+  .timer-ring svg { transform:rotate(-90deg); }
+  .timer-ring .bg  { fill:none;stroke:var(--border);stroke-width:5; }
+  .timer-ring .fg  { fill:none;stroke:var(--gold);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .3s; }
+  .timer-text { position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:15px;font-weight:700;color:var(--gold); }
+  .timer-text.warn { color:var(--red); }
+
+  /* Attempts bar */
+  .attempts-bar { display:flex;gap:5px;justify-content:center;margin:8px 0; }
+  .att-dot { width:10px;height:10px;border-radius:50%; transition:background .3s; }
+  .att-dot.active { background:var(--gold); }
+  .att-dot.used   { background:var(--red); }
+  .att-dot.empty  { background:var(--border); }
+
+  /* Buttons */
+  .btn { display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .2s;font-family:inherit;text-decoration:none; }
+  .btn-gold { background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#000;font-weight:600; }
+  .btn-gold:hover { filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,168,76,.3); }
+  .btn-gold:disabled { opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;filter:none; }
+  .btn-outline { background:transparent;border:1px solid var(--border);color:var(--text-2); }
+  .btn-outline:hover:not(:disabled) { border-color:var(--gold);color:var(--gold); }
+  .btn-outline:disabled { opacity:.4;cursor:not-allowed; }
+  .btn-block { width:100%; }
+  .btn-lg { padding:13px 24px;font-size:15px; }
+</style>
+
+<div class="auth-page">
+<div class="auth-card">
+
+  <!-- Logo -->
+  <div class="auth-logo">
+    <div class="logo-icon">&#9830;</div>
+    <span>BLACKROCK</span>
+  </div>
+
+  <!-- Step Indicator -->
+  <div class="steps">
+    <div style="display:flex;align-items:center;">
+      <div class="step-dot done">&#10003;</div>
+      <span class="step-label" style="color:var(--green);">Request</span>
+    </div>
+    <div class="step-line done"></div>
+    <div style="display:flex;align-items:center;">
+      <div class="step-dot active">2</div>
+      <span class="step-label" style="color:var(--gold);">Verify OTP</span>
+    </div>
+    <div class="step-line"></div>
+    <div style="display:flex;align-items:center;">
+      <div class="step-dot idle">3</div>
+      <span class="step-label" style="color:var(--text-3);">New Password</span>
+    </div>
+  </div>
+
+  <h2 style="font-family:Georgia,serif;font-size:24px;margin-bottom:6px;">Enter Your OTP</h2>
+  <p style="color:var(--text-2);font-size:13px;margin-bottom:18px;">
+    Code sent to <strong style="font-family:monospace;color:var(--gold);font-size:12px;">{{ email }}</strong>
+  </p>
+
+  {% if debug_mode %}
+  <div class="alert alert-warning" style="font-size:12px;">
+    &#128295; <strong>Debug mode ON</strong> — OTP printed to server console. Check your terminal.
+  </div>
+  {% endif %}
+
+  {% if messages %}
+    {% for m in messages %}
+    <div class="alert alert-{{ m.tags }}">
+      <span>{% if m.tags == 'success' %}&#10003;{% elif m.tags == 'error' %}&#9888;{% else %}&#8505;{% endif %}</span>
+      {{ m }}
+    </div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- Delivery status -->
+  {% if delivery_status == 'FAILED' %}
+  <div class="alert alert-error">
+    &#9888; Email delivery failed.
+    {% if debug_mode %}Check server console for your OTP.{% else %}Use the Resend button or contact support.{% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Countdown Timer -->
+  <div class="timer-wrap">
+    <div class="timer-ring">
+      <svg viewBox="0 0 68 68" width="68" height="68">
+        <circle class="bg" cx="34" cy="34" r="30"/>
+        <circle class="fg" id="timerArc" cx="34" cy="34" r="30"
+          stroke-dasharray="188.5"
+          stroke-dashoffset="0"/>
+      </svg>
+      <div class="timer-text" id="timerText">
+        <span id="timerDisplay">{{ minutes_remaining }}:00</span>
+      </div>
+    </div>
+    <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);">OTP expires in</div>
+  </div>
+
+  <!-- Attempts remaining -->
+  <div style="text-align:center;margin:10px 0 4px;">
+    <div class="attempts-bar" id="attemptsBar">
+      {% for i in "12345" %}
+      <div class="att-dot {% if forloop.counter <= attempts_remaining %}active{% else %}used{% endif %}" data-idx="{{ forloop.counter }}"></div>
+      {% endfor %}
+    </div>
+    <div style="font-size:11px;color:var(--text-3);" id="attemptsLabel">{{ attempts_remaining }} verification attempt(s) remaining</div>
+  </div>
+
+  <!-- OTP Form -->
+  <form method="post" action="{% url 'users:verify_otp' token=token %}" id="otpForm">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="verify">
+    <input type="hidden" name="otp" id="otpValue">
+
+    <div class="otp-row" id="otpBoxes">
+      {% for i in "123456" %}
+      <input class="otp-box" type="text" maxlength="1" inputmode="numeric"
+        pattern="[0-9]" autocomplete="{% if forloop.first %}one-time-code{% endif %}"
+        data-idx="{{ forloop.counter0 }}" aria-label="OTP digit {{ forloop.counter }}">
+      {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-gold btn-block btn-lg" id="verifyBtn" disabled>
+      &#9654; Verify OTP
+    </button>
+  </form>
+
+  <!-- Resend Form -->
+  <form method="post" action="{% url 'users:verify_otp' token=token %}" id="resendForm" style="margin-top:14px;">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="resend">
+    <button type="submit" class="btn btn-outline btn-block" id="resendBtn"
+      {% if not can_resend %}disabled{% endif %}>
+      &#8635; Resend OTP
+      {% if not can_resend %}<span id="resendCountdownText">({{ resend_wait }}s)</span>{% endif %}
+    </button>
+  </form>
+
+  <div style="text-align:center;margin-top:18px;">
+    <a href="{% url 'users:login' %}" style="font-size:13px;color:var(--text-3);">
+      &#8592; Back to Login
+    </a>
+  </div>
+
+</div>
+</div>
+
+{% block extra_js %}
+<script>
+(function(){
+  // ── OTP Box Logic ──────────────────────────────────────────────────────
+  var boxes    = document.querySelectorAll('.otp-box');
+  var hidden   = document.getElementById('otpValue');
+  var verifyBtn= document.getElementById('verifyBtn');
+
+  function getVal(){ return Array.from(boxes).map(b=>b.value).join(''); }
+
+  function sync(){
+    var v = getVal();
+    hidden.value = v;
+    verifyBtn.disabled = v.length < 6 || !/^\d{6}$/.test(v);
+    boxes.forEach(b=>b.classList.toggle('filled', b.value!==''));
+  }
+
+  boxes.forEach(function(box, i){
+    box.addEventListener('keydown', function(e){
+      if(e.key==='Backspace' && !this.value && i>0){ boxes[i-1].focus(); boxes[i-1].value=''; sync(); }
+      if(e.key==='ArrowLeft'  && i>0) boxes[i-1].focus();
+      if(e.key==='ArrowRight' && i<boxes.length-1) boxes[i+1].focus();
+    });
+    box.addEventListener('input', function(){
+      this.value = this.value.replace(/\D/g,'').slice(-1);
+      sync();
+      if(this.value && i<boxes.length-1) boxes[i+1].focus();
+      if(getVal().length===6){ document.getElementById('otpForm').submit(); }
+    });
+    box.addEventListener('paste', function(e){
+      e.preventDefault();
+      var p=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+      p.split('').forEach(function(ch,j){ if(boxes[j]) boxes[j].value=ch; });
+      sync();
+      boxes[Math.min(p.length, boxes.length-1)].focus();
+    });
+  });
+  boxes[0].focus();
+
+  // ── OTP Expiry Countdown ───────────────────────────────────────────────
+  var totalSec = {{ seconds_remaining }};
+  var maxSec   = totalSec;
+  var arc      = document.getElementById('timerArc');
+  var display  = document.getElementById('timerDisplay');
+  var timerTxt = document.getElementById('timerText');
+  var circ     = 188.5;
+
+  function tick(){
+    if(totalSec <= 0){
+      display.textContent = '0:00';
+      arc.style.strokeDashoffset = circ;
+      timerTxt.classList.add('warn');
+      arc.style.stroke = 'var(--red)';
+      document.getElementById('verifyBtn').disabled = true;
+      // Inject expiry notice
+      var notice = document.createElement('div');
+      notice.className = 'alert alert-error';
+      notice.innerHTML = '&#9888; OTP has expired. <a href="{% url "users:forgot_password" %}" style="color:inherit;font-weight:600;">Request a new one &rarr;</a>';
+      document.getElementById('otpForm').before(notice);
+      return;
+    }
+    var m = Math.floor(totalSec/60), s = totalSec%60;
+    display.textContent = m+':'+(s<10?'0':'')+s;
+    arc.style.strokeDashoffset = circ*(1 - totalSec/maxSec);
+    if(totalSec <= 90){ timerTxt.classList.add('warn'); arc.style.stroke='var(--red)'; }
+    else if(totalSec <= 180){ arc.style.stroke='var(--amber)'; }
+    totalSec--;
+    setTimeout(tick, 1000);
+  }
+  if(totalSec>0) tick();
+
+  // ── Resend Cooldown Countdown ──────────────────────────────────────────
+  var resendBtn  = document.getElementById('resendBtn');
+  var resendWait = {{ resend_wait|default:0 }};
+
+  function resendTick(){
+    if(resendWait <= 0){
+      resendBtn.disabled = false;
+      var txt = resendBtn.querySelector('span');
+      if(txt) txt.remove();
+      return;
+    }
+    var existing = resendBtn.querySelector('#resendCountdownText') || resendBtn.querySelector('span');
+    if(!existing){
+      var sp = document.createElement('span');
+      sp.id = 'resendCountdownText';
+      resendBtn.appendChild(sp);
+      existing = sp;
+    }
+    existing.textContent = '(' + resendWait + 's)';
+    resendWait--;
+    setTimeout(resendTick, 1000);
+  }
+  if(resendWait > 0) resendTick();
+
+})();
+</script>
+<script>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          { pageLanguage: 'en' },
+          'google_translate_element'
+        );
+      }
+      </script>  
+      <!-- CDN -->
+      <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>  
+{% endblock %}
+{% endblock %}

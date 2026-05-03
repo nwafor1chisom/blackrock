@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Admin — Credit Bonus{% endblock %}
+{% block page_title %}Credit Profit Bonus{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Credit Profit Bonus</h1>
+  <p>Manually assign virtual profit credits to a user's ledger. No real funds movement.</p>
+</div>
+
+<div style="max-width:540px;" class="fade-up-2">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-coins text-gold"></i> Issue Admin Bonus</div>
+    <div class="alert alert-warning mb-16">
+      <i class="fas fa-triangle-exclamation"></i>
+      <span>Profit bonuses are virtual credits only. They do NOT involve real funds or platform wallet transactions.</span>
+    </div>
+    <form method="post" action="{% url 'adminpanel:credit_bonus' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Select User</label>
+        <select name="user_id" class="form-control form-select" required>
+          <option value="">-- Select User --</option>
+          {% for u in users %}
+          <option value="{{ u.pk }}">{{ u.email }} — {{ u.get_full_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bonus Amount (USD)</label>
+        <input type="number" name="amount" class="form-control" placeholder="0.00" min="0.01" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description / Note</label>
+        <input type="text" name="description" class="form-control" placeholder="Profit bonus — Investment return Q4" value="Admin profit bonus">
+      </div>
+      <button type="submit" class="btn btn-gold btn-block btn-lg" onclick="return confirm('Credit this bonus to the selected user?')">
+        <i class="fas fa-coins"></i> Issue Bonus Credit
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

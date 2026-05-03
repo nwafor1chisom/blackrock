@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}Profile{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+{% block nav_profile %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>My Profile</h1>
+  <p>Manage your personal information and account settings</p>
+</div>
+
+<div class="grid-2 fade-up-2" style="gap:24px;align-items:start;">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-user-circle text-gold"></i> Personal Information</div>
+    <form method="post" enctype="multipart/form-data" action="{% url 'users:profile' %}">
+      {% csrf_token %}
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input type="text" name="phone_number" class="form-control" value="{{ user.phone_number }}" placeholder="+1 555 000 0000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Country</label>
+        <input type="text" name="country" class="form-control" value="{{ user.country }}" placeholder="Your country">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date of Birth</label>
+        <input type="date" name="date_of_birth" class="form-control" value="{{ user.date_of_birth|date:'Y-m-d'|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Address</label>
+        <textarea name="address" class="form-control" rows="2" placeholder="Your address">{{ user.address }}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Profile Picture</label>
+        <input type="file" name="profile_picture" class="form-control" accept="image/*" style="padding:8px 12px;">
+      </div>
+      <button type="submit" class="btn btn-gold"><i class="fas fa-save"></i> Save Changes</button>
+    </form>
+  </div>
+
+  <div>
+    <div class="card mb-24">
+      <div class="card-title"><i class="fas fa-circle-info text-gold"></i> Account Info</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border-subtle);">
+          <span style="font-size:13px;color:var(--text-2);">Email</span>
+          <span style="font-size:13px;font-family:'Space Mono',monospace;">{{ user.email }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border-subtle);">
+          <span style="font-size:13px;color:var(--text-2);">Username</span>
+          <span style="font-size:13px;">{{ user.username }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border-subtle);">
+          <span style="font-size:13px;color:var(--text-2);">KYC Status</span>
+          <span class="badge badge-{{ g_kyc_status|lower }}">{{ g_kyc_status }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--border-subtle);">
+          <span style="font-size:13px;color:var(--text-2);">Referral Code</span>
+          <span style="font-family:'Space Mono',monospace;font-size:13px;color:var(--gold);">{{ user.referral_code }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;color:var(--text-2);">Member Since</span>
+          <span style="font-size:13px;">{{ user.date_joined|date:"M d, Y" }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="fas fa-lock text-gold"></i> Security</div>
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:16px;">Keep your account secure with a strong password.</p>
+      <a href="{% url 'admin:password_change' %}" class="btn btn-outline btn-block">
+        <i class="fas fa-key"></i> Change Password
+      </a>
+      <div class="divider"></div>
+      <a href="{% url 'users:logout' %}" class="btn btn-danger btn-block">
+        <i class="fas fa-right-from-bracket"></i> Sign Out
+      </a>
+    </div>
+  </div>
+</div>
+<script>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          { pageLanguage: 'en' },
+          'google_translate_element'
+        );
+      }
+      </script>  
+      <!-- CDN -->
+      <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>  
+{% endblock %}

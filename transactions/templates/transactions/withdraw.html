@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}Withdraw{% endblock %}
+{% block page_title %}Withdraw Funds{% endblock %}
+{% block nav_withdraw %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Withdraw Funds</h1>
+  <p>Request a withdrawal to your crypto wallet. Admin approval required.</p>
+</div>
+
+<div class="grid-2 fade-up-2" style="gap:24px;align-items:start;">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-arrow-up-from-bracket text-gold"></i> Withdrawal Request</div>
+
+    {% if not user.kyc_approved %}
+    <div class="alert alert-warning">
+      <i class="fas fa-lock"></i>
+      <div>
+        <strong>KYC Verification Required</strong><br>
+        <span style="font-size:13px;">You must complete identity verification before you can withdraw. <a href="{% url 'kyc:submit' %}">Submit KYC →</a></span>
+      </div>
+    </div>
+    {% else %}
+
+    <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:20px;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">Available Balance</div>
+      <div style="font-family:'Space Mono',monospace;font-size:28px;color:var(--gold);margin-top:4px;">${{ balance|floatformat:2 }}</div>
+    </div>
+
+    <form method="post" action="{% url 'transactions:withdraw' %}">
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors }}</div>{% endif %}
+
+      <div class="form-group">
+        <label class="form-label">Amount (USD)</label>
+        <input type="number" name="amount" class="form-control" placeholder="0.00" min="1" step="0.01" max="{{ balance }}" required>
+        {% if form.amount.errors %}<div class="form-error">{{ form.amount.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Your Withdrawal Address</label>
+        <input type="text" name="withdrawal_address" class="form-control" placeholder="Your crypto wallet address" required>
+        {% if form.withdrawal_address.errors %}<div class="form-error">{{ form.withdrawal_address.errors.0 }}</div>{% endif %}
+        <div class="form-hint">Double-check your address. Wrong address = permanent loss.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Network</label>
+        <input type="text" name="withdrawal_network" class="form-control" placeholder="e.g. TRC20, ERC20, BTC, BNB" required>
+        {% if form.withdrawal_network.errors %}<div class="form-error">{{ form.withdrawal_network.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="alert alert-info" style="margin-bottom:20px;">
+        <i class="fas fa-info-circle"></i>
+        <span>Your balance will be reserved immediately. Funds are released or returned based on admin decision.</span>
+      </div>
+
+      <button type="submit" class="btn btn-gold btn-block btn-lg">
+        <i class="fas fa-arrow-up-from-bracket"></i> Submit Withdrawal Request
+      </button>
+    </form>
+    {% endif %}
+  </div>
+
+  <div>
+    <div class="card mb-24">
+      <div class="card-title"><i class="fas fa-info-circle text-gold"></i> Withdrawal Process</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:var(--gold-muted);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0;">1</div>
+          <div><div style="font-size:14px;font-weight:500;">KYC Approval Required</div><div style="font-size:12px;color:var(--text-3);">Identity must be verified before withdrawal</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:var(--gold-muted);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0;">2</div>
+          <div><div style="font-size:14px;font-weight:500;">Submit Request</div><div style="font-size:12px;color:var(--text-3);">Balance reserved pending admin review</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:var(--gold-muted);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0;">3</div>
+          <div><div style="font-size:14px;font-weight:500;">Admin Review</div><div style="font-size:12px;color:var(--text-3);">Typically processed within 24-48 hours</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:var(--gold-muted);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0;">4</div>
+          <div><div style="font-size:14px;font-weight:500;">Funds Sent</div><div style="font-size:12px;color:var(--text-3);">Or returned to your balance if rejected</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="fas fa-shield-halved text-gold"></i> Security Note</div>
+      <p style="font-size:13px;color:var(--text-2);line-height:1.7;">All withdrawal requests are manually reviewed by our compliance team. This process protects all users and ensures regulatory compliance. Never share your account credentials with anyone.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% block title %}Deposit{% endblock %}
+{% block page_title %}Deposit Funds{% endblock %}
+{% block nav_deposit %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Deposit Funds</h1>
+  <p>Select a payment method, send crypto to the platform wallet, then submit your deposit request</p>
+</div>
+
+<div class="grid-2 fade-up-2" style="gap:24px;align-items:start;">
+
+  <!-- Deposit Form -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-arrow-down-to-bracket text-gold"></i> New Deposit</div>
+
+      {% if selected_plan %}
+      <div class="alert alert-info" style="margin-bottom:20px;">
+        <i class="fas fa-chart-line"></i>
+        You selected the <strong style="color:var(--gold);">{{ selected_plan }}</strong> plan.
+        Make a deposit to activate it.
+      </div>
+      {% endif %}
+
+    <form method="post" enctype="multipart/form-data" action="{% url 'transactions:deposit' %}">
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors }}</div>{% endif %}
+
+      <div class="form-group">
+        <label class="form-label">Payment Method</label>
+        <select name="payment_method" class="form-control form-select" id="paymentMethodSelect" onchange="loadPaymentDetails(this)" required>
+          <option value="">-- Select Payment Method --</option>
+          {% for method in payment_methods %}
+          <option value="{{ method.pk }}"
+            data-address="{{ method.wallet_address }}"
+            data-name="{{ method.display_name }}"
+            data-min="{{ method.minimum_deposit }}"
+            data-network="{{ method.network_label }}"
+            data-qr="{% if method.qr_code %}{{ method.qr_code.url }}{% endif %}">
+            {{ method.display_name }}{% if method.network_label %} ({{ method.network_label }}){% endif %}
+          </option>
+          {% endfor %}
+        </select>
+        {% if form.payment_method.errors %}<div class="form-error">{{ form.payment_method.errors.0 }}</div>{% endif %}
+      </div>
+
+      <!-- Payment Details Display -->
+      <div id="paymentDetails" style="display:none;margin-bottom:20px;">
+        <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:10px;padding:18px;">
+          <div class="flex-between mb-8">
+            <span style="font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">Platform Wallet Address</span>
+            <button type="button" onclick="copyAddress()" class="btn btn-outline btn-sm"><i class="fas fa-copy"></i> Copy</button>
+          </div>
+          <div id="walletAddress" style="font-family:'Space Mono',monospace;font-size:13px;color:var(--gold);word-break:break-all;padding:10px;background:var(--bg-4);border-radius:8px;border:1px solid var(--border);"></div>
+          <div id="networkLabel" style="font-size:11px;color:var(--text-3);margin-top:8px;"></div>
+          <div id="minDeposit" style="font-size:12px;color:var(--amber);margin-top:6px;"></div>
+          <div id="qrSection" style="text-align:center;margin-top:16px;display:none;">
+            <img id="qrImage" src="" alt="QR Code" style="width:140px;height:140px;border-radius:10px;border:2px solid var(--border);">
+            <div style="font-size:11px;color:var(--text-3);margin-top:6px;">Scan QR code to get address</div>
+          </div>
+        </div>
+        <div class="alert alert-warning" style="margin-top:12px;">
+          <i class="fas fa-triangle-exclamation"></i>
+          <span>Only send to the address above. Sending to the wrong address results in permanent loss of funds.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Amount (USD)</label>
+        <input type="number" name="amount" class="form-control" placeholder="0.00" min="1" step="0.01" required>
+        {% if form.amount.errors %}<div class="form-error">{{ form.amount.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Transaction Hash / TX ID <span style="color:var(--text-3);font-weight:400;">(optional but recommended)</span></label>
+        <input type="text" name="tx_hash" class="form-control" placeholder="Enter blockchain transaction hash">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Your Sending Address <span style="color:var(--text-3);font-weight:400;">(optional)</span></label>
+        <input type="text" name="sender_address" class="form-control" placeholder="Your crypto wallet address">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Payment Proof Screenshot <span style="color:var(--text-3);font-weight:400;">(optional)</span></label>
+        <input type="file" name="payment_proof" class="form-control" accept="image/*" style="padding:8px 12px;">
+        <div class="form-hint">Upload a screenshot of your payment confirmation</div>
+      </div>
+
+      <button type="submit" class="btn btn-gold btn-block btn-lg">
+        <i class="fas fa-paper-plane"></i> Submit Deposit Request
+      </button>
+    </form>
+  </div>
+
+  <!-- Instructions -->
+  <div>
+    <div class="card mb-24">
+      <div class="card-title"><i class="fas fa-info-circle text-gold"></i> How It Works</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:var(--gold-muted);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0;">1</div>
+          <div>
+            <div style="font-size:14px;font-weight:500;">Select a payment method</div>
+            <div style="font-size:12px;color:var(--text-3);">Choose from active crypto options</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:var(--gold-muted);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0;">2</div>
+          <div>
+            <div style="font-size:14px;font-weight:500;">Send to the platform wallet</div>
+            <div style="font-size:12px;color:var(--text-3);">Copy the address shown and send your crypto</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:var(--gold-muted);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0;">3</div>
+          <div>
+            <div style="font-size:14px;font-weight:500;">Submit deposit request</div>
+            <div style="font-size:12px;color:var(--text-3);">Fill in the form and submit with TX hash</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:var(--gold-muted);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0;">4</div>
+          <div>
+            <div style="font-size:14px;font-weight:500;">Admin reviews and credits balance</div>
+            <div style="font-size:12px;color:var(--text-3);">Your wallet is credited upon approval</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="fas fa-coins text-gold"></i> Accepted Methods</div>
+      {% for method in payment_methods %}
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle);">
+        <div>
+          <div style="font-size:14px;font-weight:500;">{{ method.display_name }}</div>
+          {% if method.network_label %}<div style="font-size:11px;color:var(--text-3);">{{ method.network_label }}</div>{% endif %}
+        </div>
+        <div style="font-size:12px;color:var(--gold);">Min: ${{ method.minimum_deposit }}</div>
+      </div>
+      {% empty %}
+      <p style="color:var(--text-3);font-size:14px;">No payment methods available. Contact support.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+{% block extra_js %}
+<script>
+function loadPaymentDetails(sel) {
+  var opt = sel.options[sel.selectedIndex];
+  var det = document.getElementById('paymentDetails');
+  if (!opt.value) { det.style.display = 'none'; return; }
+  document.getElementById('walletAddress').textContent = opt.dataset.address;
+  document.getElementById('networkLabel').textContent = opt.dataset.network ? 'Network: ' + opt.dataset.network : '';
+  document.getElementById('minDeposit').textContent = 'Minimum deposit: $' + opt.dataset.min;
+  var qrSec = document.getElementById('qrSection');
+  var qrImg = document.getElementById('qrImage');
+  if (opt.dataset.qr) {
+    qrImg.src = opt.dataset.qr;
+    qrSec.style.display = 'block';
+  } else {
+    qrSec.style.display = 'none';
+  }
+  det.style.display = 'block';
+}
+function copyAddress() {
+  var addr = document.getElementById('walletAddress').textContent;
+  navigator.clipboard.writeText(addr).then(function() {
+    alert('Address copied to clipboard!');
+  });
+}
+</script>
+{% endblock %}
+{% endblock %}

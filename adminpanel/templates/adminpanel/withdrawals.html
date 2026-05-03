@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Admin — Withdrawals{% endblock %}
+{% block page_title %}Manage Withdrawals{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Withdrawal Requests</h1>
+  <p>Approve or reject user withdrawal requests. Rejecting restores the user's balance.</p>
+</div>
+
+<div class="card mb-24 fade-up-2">
+  <form method="get" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+    <div>
+      <label class="form-label">Status Filter</label>
+      <select name="status" class="form-control form-select" style="width:180px;" onchange="this.form.submit()">
+        <option value="">All Statuses</option>
+        {% for val, label in status_choices %}
+        <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% if selected_status %}<a href="{% url 'adminpanel:withdrawals' %}" class="btn btn-outline btn-sm">Clear</a>{% endif %}
+  </form>
+</div>
+
+<div class="card fade-up-3">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Reference</th><th>User</th><th>Amount</th><th>Address</th><th>Network</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for wdr in withdrawals %}
+        <tr>
+          <td class="mono" style="font-size:12px;">{{ wdr.reference }}</td>
+          <td><a href="{% url 'adminpanel:user_detail' wdr.user.pk %}" class="text-gold">{{ wdr.user.email }}</a></td>
+          <td class="mono" style="font-weight:600;color:var(--red);">${{ wdr.amount|floatformat:2 }}</td>
+          <td class="mono" style="font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ wdr.withdrawal_address }}">
+            {{ wdr.withdrawal_address|default:"—" }}
+          </td>
+          <td style="font-size:12px;">{{ wdr.withdrawal_network|default:"—" }}</td>
+          <td><span class="badge badge-{{ wdr.status|lower }}">{{ wdr.status }}</span></td>
+          <td style="font-size:12px;color:var(--text-3);">{{ wdr.created_at|date:"M d H:i" }}</td>
+          <td>
+            {% if wdr.status == 'PENDING' %}
+            <div style="display:flex;gap:6px;">
+              <form method="post" action="{% url 'adminpanel:withdrawal_action' wdr.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="approve">
+                <input type="hidden" name="note" value="Approved by admin">
+                <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Approve withdrawal for {{ wdr.user.email }}?')">
+                  <i class="fas fa-check"></i>
+                </button>
+              </form>
+              <form method="post" action="{% url 'adminpanel:withdrawal_action' wdr.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reject">
+                <input type="hidden" name="note" value="Rejected — funds restored">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Reject and RESTORE funds for {{ wdr.user.email }}?')">
+                  <i class="fas fa-times"></i>
+                </button>
+              </form>
+            </div>
+            {% else %}
+            <span style="font-size:12px;color:var(--text-3);">{{ wdr.admin_note|truncatechars:20|default:"—" }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-3);">
+          <i class="fas fa-inbox" style="font-size:28px;display:block;margin-bottom:10px;"></i>
+          No withdrawals found.
+        </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

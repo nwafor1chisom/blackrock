@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Welcome back, {{ user.first_name }} 👋</h1>
+  <p>Here's your financial overview for today</p>
+</div>
+
+<!-- Balance Stats -->
+<div class="stat-grid fade-up-2">
+  <div class="stat-card">
+    <i class="fas fa-wallet stat-icon"></i>
+    <div class="stat-label">Wallet Balance</div>
+    <div class="stat-value gold">${{ balance|floatformat:2 }}</div>
+    <div class="stat-sub">{{ wallet.wallet_id }}</div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-chart-line stat-icon"></i>
+    <div class="stat-label">Profit Balance</div>
+    <div class="stat-value green">${{ profit_balance|floatformat:2 }}</div>
+    <div class="stat-sub">Admin bonus credits</div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-share-nodes stat-icon"></i>
+    <div class="stat-label">Referral Earnings</div>
+    <div class="stat-value" style="color:var(--blue)">${{ referral_balance|floatformat:2 }}</div>
+    <div class="stat-sub">Approved bonuses</div>
+  </div>
+  <div class="stat-card">
+    <i class="fas fa-id-card stat-icon"></i>
+    <div class="stat-label">KYC Status</div>
+    <div class="stat-value" style="font-size:16px;margin-top:4px;">
+      {% if kyc_status == 'APPROVED' %}
+        <span class="badge badge-approved"><i class="fas fa-check"></i> Verified</span>
+      {% elif kyc_status == 'PENDING' %}
+        <span class="badge badge-pending"><i class="fas fa-clock"></i> Under Review</span>
+      {% elif kyc_status == 'REJECTED' %}
+        <span class="badge badge-rejected"><i class="fas fa-times"></i> Rejected</span>
+      {% else %}
+        <span class="badge badge-cancelled">Not Submitted</span>
+      {% endif %}
+    </div>
+    <div class="stat-sub">
+      {% if not kyc_approved %}<a href="{% url 'kyc:submit' %}" class="text-gold" style="font-size:11px;">Complete KYC →</a>{% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- KYC Warning Banner -->
+{% if not kyc_approved %}
+<div class="alert alert-warning fade-up-2" style="margin-bottom:24px;">
+  <i class="fas fa-triangle-exclamation"></i>
+  <div>
+    <strong>KYC Required for Withdrawals</strong><br>
+    <span style="font-size:13px;">You must complete identity verification before withdrawing funds. <a href="{% url 'kyc:submit' %}">Submit KYC now →</a></span>
+  </div>
+</div>
+{% endif %}
+
+<!-- Quick Actions -->
+<div class="card mb-24 fade-up-3">
+  <div class="card-title"><i class="fas fa-bolt text-gold"></i> Quick Actions</div>
+  <div style="display:flex;flex-wrap:wrap;gap:12px;">
+    <a href="{% url 'transactions:deposit' %}" class="btn btn-gold"><i class="fas fa-arrow-down-to-bracket"></i> Deposit Funds</a>
+    <a href="{% url 'transactions:withdraw' %}" class="btn btn-outline"><i class="fas fa-arrow-up-from-bracket"></i> Withdraw</a>
+    <a href="{% url 'transactions:history' %}" class="btn btn-outline"><i class="fas fa-clock-rotate-left"></i> History</a>
+    <a href="{% url 'referral:dashboard' %}" class="btn btn-outline"><i class="fas fa-share-nodes"></i> Refer & Earn</a>
+    {% if not kyc_approved %}
+    <a href="{% url 'kyc:submit' %}" class="btn btn-outline" style="border-color:var(--amber);color:var(--amber);"><i class="fas fa-id-card"></i> Complete KYC</a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Recent Transactions -->
+<div class="grid-2 fade-up-4">
+  <div class="card">
+    <div class="flex-between mb-16">
+      <div class="card-title" style="margin-bottom:0;"><i class="fas fa-receipt text-gold"></i> Recent Transactions</div>
+      <a href="{% url 'transactions:history' %}" class="btn btn-outline btn-sm">View All</a>
+    </div>
+    {% if recent_transactions %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ref</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for txn in recent_transactions %}
+          <tr>
+            <td class="mono">{{ txn.reference }}</td>
+            <td>
+              {% if txn.transaction_type == 'DEPOSIT' %}
+                <span style="color:var(--green);"><i class="fas fa-arrow-down"></i> Deposit</span>
+              {% else %}
+                <span style="color:var(--red);"><i class="fas fa-arrow-up"></i> Withdrawal</span>
+              {% endif %}
+            </td>
+            <td class="mono">${{ txn.amount|floatformat:2 }}</td>
+            <td><span class="badge badge-{{ txn.status|lower }}">{{ txn.status }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:32px;color:var(--text-3);">
+      <i class="fas fa-inbox" style="font-size:32px;margin-bottom:12px;display:block;"></i>
+      No transactions yet. <a href="{% url 'transactions:deposit' %}">Make your first deposit</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Ledger Activity -->
+  <div class="card">
+    <div class="flex-between mb-16">
+      <div class="card-title" style="margin-bottom:0;"><i class="fas fa-book text-gold"></i> Ledger Activity</div>
+      <a href="{% url 'ledger:history' %}" class="btn btn-outline btn-sm">View All</a>
+    </div>
+    {% if recent_ledger %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>Category</th><th>Amount</th><th>Date</th></tr></thead>
+        <tbody>
+          {% for entry in recent_ledger %}
+          <tr>
+            <td><span class="badge badge-{{ entry.entry_type|lower }}">{{ entry.entry_type }}</span></td>
+            <td style="font-size:12px;">{{ entry.get_category_display }}</td>
+            <td class="mono {% if entry.entry_type == 'CREDIT' %}text-green{% else %}text-red{% endif %}">
+              {% if entry.entry_type == 'CREDIT' %}+{% else %}-{% endif %}${{ entry.amount|floatformat:2 }}
+            </td>
+            <td style="font-size:12px;color:var(--text-3);">{{ entry.created_at|date:"M d, H:i" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:32px;color:var(--text-3);">
+      <i class="fas fa-book-open" style="font-size:32px;margin-bottom:12px;display:block;"></i>
+      No ledger entries yet.
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
