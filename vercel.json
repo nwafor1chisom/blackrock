@@ -5,7 +5,13 @@
       "src": "blackrock/wsgi.py",
       "use": "@vercel/python",
       "config": {
-        "includeFiles": "**/*"
+        "includeFiles": [
+          "**/*.py",
+          "**/*.html",
+          "**/*.css",
+          "**/*.js",
+          "**/*.txt"
+        ]
       }
     }
   ],
