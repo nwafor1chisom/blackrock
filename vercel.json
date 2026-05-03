@@ -6,9 +6,11 @@
       "use": "@vercel/python",
       "config": {
         "includeFiles": [
-          "templates/**",
-          "static/**",
-          "blackrock/**"
+          "templates/**/*",
+          "static/**/*",
+          "blackrock/**/*",
+          "core/**/*",
+          "dashboard/**/*"
         ]
       }
     }
