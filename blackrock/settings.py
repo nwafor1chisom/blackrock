@@ -236,4 +236,3 @@ LOGIN_URL          = '/users/login/'   # @login_required redirects here
 LOGIN_REDIRECT_URL = '/dashboard/'     # after login, go to dashboard
 # After logout: go to '/' — home_view renders home.html, NO redirect loop
 # LOGOUT_REDIRECT_URL intentionally omitted — logout_view in users/views.py handles all logout redirects
-print("EMAIL PASSWORD:", config("EMAIL_HOST_PASSWORD"))
