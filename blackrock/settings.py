@@ -38,20 +38,21 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # Security (must be first)
     'django.middleware.security.SecurityMiddleware',
 
-    # ✅ MUST BE DIRECTLY AFTER SECURITY
+    # Static files handler (IMPORTANT for UI)
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
+    # Core Django middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # SaaS-level custom middleware (keep LAST)
+    # SaaS-level custom middleware (your logic)
     'core.middleware.PublicRouteGuard',
     'core.middleware.AuditLogMiddleware',
     'core.middleware.KYCEnforcementMiddleware',
@@ -81,12 +82,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'blackrock.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=config(
+            'DATABASE_URL',
+            default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'
+        ),
+        conn_max_age=600,
+        ssl_require=True  # ✅ Add this line
+    )
 }
-DATABASES['default'] = dj_database_url.parse(config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'), conn_max_age=600)
 
 
 AUTH_PASSWORD_VALIDATORS = [

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Verify OTP{% endblock %}
 
 {% block auth_content %}
@@ -83,16 +84,20 @@
   .btn-outline:disabled { opacity:.4;cursor:not-allowed; }
   .btn-block { width:100%; }
   .btn-lg { padding:13px 24px;font-size:15px; }
+  .brand{
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
 </style>
 
 <div class="auth-page">
 <div class="auth-card">
 
   <!-- Logo -->
-  <div class="auth-logo">
-    <div class="logo-icon">&#9830;</div>
-    <span>BLACKROCK</span>
-  </div>
+   <div class="auth-logo">
+      <img class="brand" src="{% static 'core/images/logo.jpg' %}" alt="Logo">
+      <span>BLACKROCK</span>
+    </div>
 
   <!-- Step Indicator -->
   <div class="steps">
