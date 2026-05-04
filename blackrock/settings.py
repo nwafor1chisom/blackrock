@@ -1,20 +1,16 @@
 import os
-
 from pathlib import Path
-from decouple import Config, RepositoryEnv, AutoConfig
+from decouple import config
 import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-env_file = os.path.join(BASE_DIR, ".env")
-
-if os.path.exists(env_file):
-    config = Config(RepositoryEnv(env_file))
-else:
-    config = AutoConfig()
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-blackrock-change-this-in-production-use-env-var')
+
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['nwaforaugustine820.pythonanywhere.com', '127.0.0.1', 'localhost']
+
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -70,14 +66,17 @@ TEMPLATES = [
     },
 ]
 
+
+
 WSGI_APPLICATION = 'blackrock.wsgi.application'
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -91,16 +90,21 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']  # top-level; app statics found via APP_DIRS
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 AUTH_USER_MODEL = 'users.User'
+
 
 
 # Email settings (configure for production)
