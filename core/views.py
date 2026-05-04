@@ -35,13 +35,10 @@ def _get_ip(request):
 
 def index_view(request):
     """
-    THE ONLY handler for '/'.
-
-    Guest        → render home.html directly.   Never redirects to public:home.
-    Authenticated → redirect to dashboard:home.  Never renders the homepage.
-
-    Loop-proof: this function can NEVER call redirect('public:home') or
-    redirect('/') because both resolve back to this same function.
+    Single handler for '/'.
+    Renders home.html for guests — NEVER redirects to 'public:home'
+    (that URL resolves back here → loop).
+    Authenticated users already redirected by middleware; guard kept for safety.
     """
     if request.user.is_authenticated:
         return redirect('dashboard:home')
