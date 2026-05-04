@@ -5,21 +5,7 @@
       "src": "blackrock/wsgi.py",
       "use": "@vercel/python",
       "config": {
-        "includeFiles": [
-          "templates/**",
-          "static/**",
-          "core/**",
-          "users/**",
-          "wallet/**",
-          "ledger/**",
-          "transactions/**",
-          "kyc/**",
-          "dashboard/**",
-          "referral/**",
-          "adminpanel/**",
-          "payments/**",
-          "blackrock/**"
-        ]
+        "includeFiles": "**"
       }
     }
   ],
