@@ -55,7 +55,7 @@ ROOT_URLCONF = 'blackrock.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), '/var/task/templates'],
+        'DIRS': [BASE_DIR / 'templates', BASE_DIR / 'blackrock' / 'templates', '/var/task/blackrock/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
