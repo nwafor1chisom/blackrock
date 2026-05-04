@@ -1,4 +1,5 @@
 import os
+
 from pathlib import Path
 from decouple import Config, RepositoryEnv, AutoConfig
 
@@ -55,7 +56,11 @@ ROOT_URLCONF = 'blackrock.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates', BASE_DIR / 'blackrock' / 'templates', '/var/task/blackrock/templates'],
+        'DIRS': [
+            BASE_DIR / 'templates',
+            BASE_DIR / 'blackrock' / 'templates',
+            Path('/var/task/blackrock/templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
