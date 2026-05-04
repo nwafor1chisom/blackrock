@@ -156,20 +156,20 @@ AUTH_USER_MODEL = 'users.User'
 # EMAIL CONFIGURATION (GMAIL SMTP - OPTION A)
 # ─────────────────────────────────────────────
 
-# ─────────────────────────────────────────────
-# EMAIL CONFIGURATION (GMAIL SMTP FIXED)
+## ─────────────────────────────────────────────
+# EMAIL CONFIGURATION (SENDGRID SMTP)
 # ─────────────────────────────────────────────
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-EMAIL_HOST_USER = 'supportblackrock@gmail.com'
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default='')
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY', default='')
 
 EMAIL_TIMEOUT = 30
 EMAIL_FAIL_SILENTLY = False
