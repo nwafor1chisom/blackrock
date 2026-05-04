@@ -6,11 +6,18 @@
       "use": "@vercel/python",
       "config": {
         "includeFiles": [
-          "**/*.py",
-          "**/*.html",
-          "**/*.css",
-          "**/*.js",
-          "**/*.txt"
+          "blackrock/templates/**",
+          "blackrock/**",
+          "core/**",
+          "users/**",
+          "wallet/**",
+          "ledger/**",
+          "transactions/**",
+          "kyc/**",
+          "dashboard/**",
+          "referral/**",
+          "adminpanel/**",
+          "static/**"
         ]
       }
     }
