@@ -60,9 +60,11 @@
             <div style="font-size:11px;color:var(--text-3);margin-top:6px;">Scan QR code to get address</div>
           </div>
         </div>
-        <div class="alert alert-warning" style="margin-top:12px;">
-          <i class="fas fa-triangle-exclamation"></i>
-          <span>Only send to the address above. Sending to the wrong address results in permanent loss of funds.</span>
+        <div id="assetWarning" style="display:none;background:#1a1400;border:1px solid #d4a017;border-radius:12px;padding:16px;margin-top:12px;display:flex;gap:12px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:22px;height:22px;border:2px solid #d4a017;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#d4a017;font-size:13px;font-weight:bold;">i</div>
+          <p style="margin:0;font-size:14px;color:#e0e0e0;line-height:1.6;">
+              Only send <strong id="warningCoinName" style="color:#d4a017;"></strong> assets to this address. Other assets will be lost forever.
+           </p>
         </div>
       </div>
 
@@ -158,10 +160,22 @@
 function loadPaymentDetails(sel) {
   var opt = sel.options[sel.selectedIndex];
   var det = document.getElementById('paymentDetails');
-  if (!opt.value) { det.style.display = 'none'; return; }
+  var warning = document.getElementById('assetWarning');
+
+  if (!opt.value) {
+    det.style.display = 'none';
+    warning.style.display = 'none';
+    return;
+  }
+
   document.getElementById('walletAddress').textContent = opt.dataset.address;
   document.getElementById('networkLabel').textContent = opt.dataset.network ? 'Network: ' + opt.dataset.network : '';
   document.getElementById('minDeposit').textContent = 'Minimum deposit: $' + opt.dataset.min;
+
+  // Update warning coin name
+  document.getElementById('warningCoinName').textContent = opt.dataset.name || opt.text;
+  warning.style.display = 'flex';
+
   var qrSec = document.getElementById('qrSection');
   var qrImg = document.getElementById('qrImage');
   if (opt.dataset.qr) {
