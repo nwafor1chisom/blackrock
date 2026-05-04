@@ -11,7 +11,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'blackrock-lpdo.onrender.com',  # ✅ Your real URL
+    'blackrock-lpdo.onrender.com',
 ]
 
 
