@@ -56,11 +56,7 @@ ROOT_URLCONF = 'blackrock.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            BASE_DIR / 'templates',
-            BASE_DIR / 'blackrock' / 'templates',
-            Path('/var/task/blackrock/templates'),
-        ],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -163,7 +159,7 @@ DEFAULT_FROM_EMAIL = 'BlackRock Support <supportblackrock@gmail.com>'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # ── DEBUG (IMPORTANT FOR EMAIL TESTING) ──
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 # MUST BE FALSE if you want real email sending
 OTP_DEBUG_PRINT = False

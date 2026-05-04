@@ -6,8 +6,8 @@
       "use": "@vercel/python",
       "config": {
         "includeFiles": [
-          "blackrock/templates/**",
-          "blackrock/**",
+          "templates/**",
+          "static/**",
           "core/**",
           "users/**",
           "wallet/**",
@@ -17,7 +17,8 @@
           "dashboard/**",
           "referral/**",
           "adminpanel/**",
-          "static/**"
+          "payments/**",
+          "blackrock/**"
         ]
       }
     }
