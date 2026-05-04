@@ -21,31 +21,41 @@
 <!-- Snow Background -->
 <div id="tsparticles"></div>
 
-<header class="navbar">
-  <div class="nav-container">
+ <!-- ── NAVBAR ─────────────────────────────────────────────────────── -->
+  <header class="navbar">
+    <div class="nav-container">
 
-    <a href="#" class="brand">
-      <img src="{% static 'core/images/logo.jpg' %}" alt="BlackRock Logo">
-      <span class="notranslate" style="margin: 0 3px;">BlackRock</span>
-    </a>
+      <a href="{% url 'public:home' %}" class="brand">
+        <img src="{% static 'core/images/logo.jpg' %}" alt="BlackRock Logo">
+        <span><div translate="no">BlackRock</div></span>
+      </a>
 
-    <nav class="nav" id="navMenu">
-      <a href="{% url 'public:home' %}">Home</a>
+      <nav class="nav" id="navMenu">
+        <a href="{% url 'public:home' %}">Home</a>
         <a href="{% url 'public:about' %}">About</a>
         <a href="{% url 'public:plan' %}">Plan</a>
         <a href="{% url 'public:faq' %}">FAQ</a>
         <a href="{% url 'public:blog' %}">Blog</a>
         <a href="{% url 'public:certification' %}">Certification</a>
         <a href="{% url 'public:contact' %}">Contact</a>
-    </nav>
+      </nav>
 
-    <div class="controls">
+      <div class="controls">
 
-      <div class="translate-wrapper">
-        <div id="google_translate_element"></div>
-      </div>
+        <div class="translate-wrapper">
+          <div id="google_translate_element"></div>
+        </div>
 
-      <a href="{% url 'users:login' %}" class="user-icon" id="userBtn" title="Login">
+        <!-- User icon: dashboard if logged in, login if not -->
+        {% if user.is_authenticated %}
+        <a href="{% url 'dashboard:home' %}" class="user-icon" title="My Dashboard">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 1 1 14.998 0A17.933 17.933 0 0 1 12 21.75Z"/>
+          </svg>
+        </a>
+        {% else %}
+        <a href="{% url 'users:login' %}" class="user-icon" id="userBtn" title="Login">
           <svg xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -60,17 +70,18 @@
                   d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 1 1 14.998 0A17.933 17.933 0 0 1 12 21.75Z"/>
           </svg>
       </a>
+        {% endif %}
 
-      <button id="darkToggle">🌙</button>
+        <button id="darkToggle">🌙</button>
 
-      <div class="hamburger" id="hamburger">
-        <span></span><span></span><span></span>
+        <div class="hamburger" id="hamburger">
+          <span></span><span></span><span></span>
+        </div>
+
       </div>
 
     </div>
-
-  </div>
-</header>
+  </header>
 
 <!-- HERO -->
 <section class="hero">
@@ -490,7 +501,7 @@ document.querySelectorAll('[data-plan]').forEach(function(btn) {
         </div>
 
         <div class="ceo-info">
-          <h3>Zorik Noshadi</h3>
+          <h3>Laurence D. Fink</h3>
           <span>Chief Executive Officer</span>
         </div>
       </div>
@@ -818,102 +829,83 @@ document.querySelectorAll('[data-plan]').forEach(function(btn) {
   </div>
 </div>
 
-<footer class="fintech-footer">
+<!-- ── FOOTER ────────────────────────────────────────────────────── -->
+  <footer class="fintech-footer">
 
-  <!-- TOP GLOW LINE -->
-  <div class="footer-glow"></div>
+    <div class="footer-glow"></div>
 
-  <div class="container">
+    <div class="container">
+      <div class="footer-grid">
 
-    <!-- GRID -->
-    <div class="footer-grid">
+        <!-- BRAND -->
+        <div class="footer-col brand">
+          <img src="{% static 'core/images/logo.jpg' %}" class="footer-logo" alt="BlackRock">
+          <p>
+            A next-generation digital finance platform built for secure investments,
+            portfolio growth, and high-speed execution.
+          </p>
+          <div class="trust-badges">
+            <span>🔒 Secured</span>
+            <span>⚡ Real-time</span>
+            <span>📊 Live Ledger</span>
+          </div>
+        </div>
 
-      <!-- BRAND -->
-      <div class="footer-col brand">
-        <img src="{% static 'core/images/logo.jpg' %}" alt="BlackRock Logo">  
+        <!-- COMPANY -->
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="{% url 'public:home' %}">Home</a>
+          <a href="{% url 'public:about' %}">About</a>
+          <a href="{% url 'public:plan' %}">Investment Plans</a>
+          <a href="{% url 'public:blog' %}">Blog</a>
+          <a href="{% url 'public:certification' %}">Certification</a>
+          <a href="{% url 'public:contact' %}">Contact</a>
+        </div>
 
-        <p>
-          A next-generation crypto trading platform built for live market intelligence,
-          portfolio tracking, and high-speed execution.
-        </p>
+        <!-- PLATFORM -->
+        <div class="footer-col">
+          <h4>Platform</h4>
+          {% if user.is_authenticated %}
+          <a href="{% url 'dashboard:home' %}">Dashboard</a>
+          <a href="{% url 'transactions:deposit' %}">Deposit</a>
+          <a href="{% url 'transactions:withdraw' %}">Withdraw</a>
+          <a href="{% url 'kyc:submit' %}">KYC Verification</a>
+          <a href="{% url 'referral:dashboard' %}">Refer & Earn</a>
+          {% else %}
+          <a href="{% url 'users:login' %}">Login</a>
+          <a href="{% url 'users:register' %}">Register</a>
+          <a href="{% url 'public:plan' %}">Investment Plans</a>
+          <a href="{% url 'public:faq' %}">FAQ</a>
+          {% endif %}
+        </div>
 
-        <div class="trust-badges">
-          <span>🔒 Secured</span>
-          <span>⚡ Real-time</span>
-          <span>📊 Market Data</span>
+        <!-- COMMUNITY -->
+        <div class="footer-col">
+          <h4>Community</h4>
+          <a href="https://telegram.org/" target="_blank">Telegram</a>
+          <a href="https://wa.me/{{ whatsapp_number|default:'' }}" target="_blank">WhatsApp Support</a>
+          <div class="live-indicator" style="margin-top:12px;">
+            <span class="dot"></span>
+            System Online
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="left">
+         &copy; <script>document.write(new Date().getFullYear());</script>
+          <span style="margin: 3px;" translate="no" class="notranslate">BlackRock</span> Digital Finance
+        </div>
+        <div class="right">
+          <a href="{% url 'public:contact' %}">Support</a>
         </div>
       </div>
-
-      <!-- COMPANY -->
-      <div class="footer-col">
-        <h4>Company</h4>
-        <a href="#">Home</a>
-        <a href="#">About</a>
-        <a href="#">Plan</a>
-        <a href="#">Blog</a>
-        <a href="#">Certification</a>
-        <a href="#">PDF</a>
-        <a href="#">Contact</a>
-      </div>
-
-      <!-- MARKET -->
-      <div class="footer-col">
-        <h4>Market</h4>
-        <a href="#">Live Prices</a>
-        <a href="#">Crypto Charts</a>
-        <a href="#">Signals</a>
-        <a href="#">API</a>
-      </div>
-
-      <!-- COMMUNITY -->
-      <div class="footer-col">
-        <h4>Community</h4>
-        <a href="https://telegram.org/" target="_blank">Telegram</a>
-        <a href="#">Facebook</a>
-        <!-- <a href="#">Discord</a> -->
-
-        <div class="live-indicator">
-          <span class="dot"></span>
-          System Online
-        </div>
-      </div>
-
     </div>
-  </div>
 
-  <!-- STRIP -->
-  <!-- <div class="footer-strip">
-    <div class="container">
-
-      <div class="pdf-links">
-        <span>Docs:</span>
-        <a href="PDF/English.pdf">EN</a>
-        <a href="PDF/Spanish.pdf">ES</a>
-        <a href="PDF/Portuguese.pdf">PT</a>
-        <a href="PDF/Chinese.pdf">CN</a>
-        <a href="PDF/Arabic.pdf">AR</a>
-      </div>
-
-    </div>
-  </div> -->
-
-  <!-- BOTTOM -->
-  <div class="footer-bottom">
-    <div class="container">
-
-      <div class="left">
-        © <script>document.write(new Date().getFullYear());</script> <span class="notranslate" style="margin: 0 5px;">BlackRock</span> Trade
-      </div>
-
-      <div class="right">
-        <a href="https://www.blockchain.com/explorer/charts/n-payments" target="_blank">Payouts</a>
-        
-      </div>
-
-    </div>
-  </div>
-
-</footer>
+  </footer>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
