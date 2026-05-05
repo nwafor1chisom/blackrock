@@ -123,17 +123,10 @@ AUTH_USER_MODEL = 'users.User'
 
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY', default='')
-EMAIL_TIMEOUT = 30
-EMAIL_FAIL_SILENTLY = False
+EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
+SENDGRID_API_KEY = config('SENDGRID_API_KEY', default='')
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 DEFAULT_FROM_EMAIL = 'BlackRock Support <supportblackrock@gmail.com>'
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # ── DEBUG (IMPORTANT FOR EMAIL TESTING) ──
 DEBUG = config('DEBUG', default=False, cast=bool)
