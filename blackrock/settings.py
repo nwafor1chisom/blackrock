@@ -122,7 +122,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'# ← ADD THIS
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage' # ← ADD THIS
 
 MEDIA_URL = '/media/'
 
@@ -130,11 +130,12 @@ ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')  # ← ADD THIS LINE
 
 if ENVIRONMENT == 'development':
     MEDIA_ROOT = BASE_DIR / 'media'
-else:
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    CLOUDINARY_STORAGE = {
-        'CLOUDINARY_URL': config('CLOUDINARY_URL')
-    }
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET'),
+}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
