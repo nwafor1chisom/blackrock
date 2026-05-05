@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from decouple import config
 import dj_database_url
-import cloudinary
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,10 +23,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
+
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'cloudinary',
+   
     # Local apps
     'core',
     'users',
@@ -37,26 +37,12 @@ INSTALLED_APPS = [
     'dashboard',
     'payments',
     'referral',
-    'adminpanel',
-   
-    
+    'adminpanel',   
 ]
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': config('CLOUDINARY_API_KEY'),
-    'API_SECRET': config('CLOUDINARY_API_SECRET'),
-    'STATIC_TAG': False,
-}
-
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.RawMediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# Simple default storage
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 MIDDLEWARE = [
     # Security (must be first)
