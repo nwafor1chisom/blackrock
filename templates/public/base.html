@@ -24,9 +24,7 @@
   <!-- Snow / Particle Background -->
   <div id="tsparticles"></div>
 
-  <div class="translate-wrapper">
-          <div id="google_translate_element"></div>
-   </div>
+  
 
   <!-- ── NAVBAR ─────────────────────────────────────────────────────── -->
   <header class="navbar">
@@ -34,7 +32,7 @@
 
       <a href="{% url 'public:home' %}" class="brand">
         <img src="{% static 'core/images/logo.jpg' %}" alt="BlackRock Logo">
-        <span>BlackRock</span>
+        <span><div translate="no">BlackRock</div></span>
       </a>
 
       <nav class="nav" id="navMenu">
@@ -49,9 +47,21 @@
 
       <div class="controls">
 
-        {% comment %} <div class="translate-wrapper">
-          <div id="google_translate_element"></div>
-        </div> {% endcomment %}
+              <!-- Google Translate -->
+              <div style="
+                display: inline-flex;
+                align-items: center;
+                background: rgba(255,255,255,0.05);
+                border: 1px solid rgba(184,145,74,0.3);
+                border-radius: 6px;
+                padding: 2px 6px;
+                font-size: 12px;
+                max-width: 130px;
+                overflow: hidden;
+              ">
+                <span style="margin-right: 4px; font-size: 13px;">🌐</span>
+                <div id="google_translate_element" style="transform: scale(0.85); transform-origin: left center;"></div>
+              </div>
 
         <!-- User icon: dashboard if logged in, login if not -->
         {% if user.is_authenticated %}
@@ -71,12 +81,11 @@
               width="24"
               height="24"
               style="color: hsl(40 54% 56%);">
-
             <path stroke-linecap="round"
                   stroke-linejoin="round"
                   d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 1 1 14.998 0A17.933 17.933 0 0 1 12 21.75Z"/>
           </svg>
-      </a>
+        </a>
         {% endif %}
 
         <button id="darkToggle">🌙</button>

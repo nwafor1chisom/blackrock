@@ -1,12 +1,15 @@
 import os
 from pathlib import Path
-from decouple import config
+from decouple import config,Csv
 import dj_database_url
+import cloudinary
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-blackrock-change-this-in-production-use-env-var')
+
+
+SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = [
@@ -23,8 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     'django.contrib.humanize',
    
     # Local apps
@@ -37,7 +41,8 @@ INSTALLED_APPS = [
     'dashboard',
     'payments',
     'referral',
-    'adminpanel',   
+    'adminpanel',  
+  
 ]
 
 
@@ -112,13 +117,20 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']  # top-level; app statics found via APP_DIRS
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
+ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')  # ← ADD THIS LINE
+
+if ENVIRONMENT == 'development':
+    MEDIA_ROOT = BASE_DIR / 'media'
+else:
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    CLOUDINARY_STORAGE = {
+        'CLOUDINARY_URL': config('CLOUDINARY_URL')
+    }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -216,3 +228,11 @@ LOGIN_URL          = '/users/login/'   # @login_required redirects here
 LOGIN_REDIRECT_URL = '/dashboard/'     # after login, go to dashboard
 # After logout: go to '/' — home_view renders home.html, NO redirect loop
 # LOGOUT_REDIRECT_URL intentionally omitted — logout_view in users/views.py handles all logout redirects
+
+
+#cloudinary configuration
+cloudinary.config( 
+  cloud_name = "dmipani7y",
+  api_key =  "126165848745411",
+  api_secret =  "CslAVs1KjcGMNdJJ84xtjSD7QuY",
+)
