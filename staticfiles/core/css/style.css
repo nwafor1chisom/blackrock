@@ -1,0 +1,2383 @@
+
+/* =========================
+   BASE RESET + GLOBAL
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+body {
+  background: #f6f7fb;
+  overflow-x: hidden;
+  position: relative;
+  color: #111;
+  transition: background 0.35s ease, color 0.35s ease;
+  z-index: 0;
+}
+
+/* =========================
+   SNOW BACKGROUND FIX
+========================= */
+#tsparticles {
+  position: fixed;
+  inset: 0;              /* better than top/left/width/height */
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 9999;         /* FORCE ABOVE EVERYTHING */
+  pointer-events: none;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+.navbar {
+  position: sticky, relative;
+  top: 0;
+  z-index: 1000;
+
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(24px);
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+/* =========================
+   LAYOUT
+========================= */
+.nav-container {
+  width: 92%;
+  max-width: 1200px;
+  margin: auto;
+  height: 72px;
+
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+
+/* =========================
+   BRAND
+========================= */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.brand img {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+}
+
+.brand span {
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  /* background: linear-gradient(90deg, #111, #444); */
+  /* -webkit-background-clip: text; */
+  /* -webkit-text-fill-color: transparent; */
+  
+}
+
+/* =========================
+   NAV LINKS
+========================= */
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+}
+
+.nav a {
+  position: relative;   /* 🔥 REQUIRED */
+  display: inline-block; /* 🔥 FIX rendering */
+  text-decoration: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: hsl(40 54% 56%);
+}
+
+.nav a:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* underline animation */
+.nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+
+  width: 100%;
+  height: 2px;
+
+  background: hsl(40deg 99.84% 26.92%);
+
+  transform: scaleX(0);
+  transform-origin: left;
+
+  opacity: 0; /* 🔥 prevents ghost line */
+  transition: transform 0.3s ease, opacity 0.25s ease;
+}
+
+.nav a:hover::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.nav a:hover::after {
+  transform: scaleX(1);
+}
+
+/* =========================
+   CONTROLS
+========================= */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* =========================
+   GOOGLE TRANSLATE FIXED
+========================= */
+
+.translate-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  min-width: 160px;   /* allow space for dropdown */
+  height: 40px;
+
+  overflow: visible;  /* IMPORTANT: prevent cutting it off */
+}
+
+/* Remove weird default spacing */
+.goog-te-gadget {
+  font-size: 0 !important;
+}
+
+/* Dropdown styling */
+.goog-te-combo {
+  width: 100% !important;
+  padding: 6px 10px;
+
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+
+  background: #fff;
+  color: #333;
+
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  outline: none;
+}
+
+
+/* Google container */
+#google_translate_element {
+  display: inline-block;
+  min-height: 30px;
+}
+
+/* DARK MODE */
+body.dark .goog-te-combo {
+  background: rgba(31, 41, 55, 0.9);
+  color: #f9fafb;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+/* optional: keep it clean in dark mode */
+body.dark .translate-wrapper {
+  filter: none;
+}
+
+
+/* =========================
+   ICON BUTTONS
+========================= */
+.user-icon,
+#darkToggle {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: white;
+  border-radius: 10px;
+
+  border: none;
+  cursor: pointer;
+
+  color: #333;
+  text-decoration: none;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+
+  transition: all 0.25s ease;
+}
+
+/* hover */
+.user-icon:hover,
+#darkToggle:hover {
+  box-shadow:
+    0 8px 20px rgba(0,0,0,0.12),
+    0 0 18px rgba(255, 215, 0, 0.18);
+}
+
+/* SVG */
+.user-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* =========================
+   HAMBURGER
+========================= */
+.hamburger {
+  width: 36px;
+  height: 36px;
+
+  display: none;
+  justify-content: center;
+  align-items: center;
+   /* background: rgba(255, 255, 255, 0.55); */
+  position: relative;
+  cursor: pointer;
+}
+
+.hamburger span {
+  position: absolute;
+  width: 24px;
+  height: 2px;
+
+  background: #111;
+  border-radius: 5px;
+
+  transition: 0.3s ease;
+}
+
+.hamburger span:nth-child(1) { transform: translateY(-6px); }
+.hamburger span:nth-child(2) { transform: translateY(0); }
+.hamburger span:nth-child(3) { transform: translateY(6px); }
+
+.hamburger.open span:nth-child(1) { transform: rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg); }
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 768px) {
+
+  /* FIX GRID STRUCTURE */
+  .nav-container {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* HAMBURGER */
+  .hamburger {
+    display: flex;
+  }
+
+  /* =========================
+     FORCE CONTROLS TO RIGHT EDGE
+  ========================= */
+  .controls {
+    justify-self: end;        /* 👈 THIS is the key fix */
+    margin-right: 6px;        /* 👈 your requested spacing */
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  
+
+  /* NAV DROPDOWN */
+  .nav {
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+
+    flex-direction: column;
+    gap: 18px;
+
+    padding: 20px 0;
+
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(18px);
+
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    pointer-events: none;
+
+    transition: all 0.25s ease;
+  }
+
+  .nav.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .nav a {
+    font-size: 1.05rem;
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  /* ICON SIZING */
+  .user-icon,
+  #darkToggle {
+    width: 34px;
+    height: 34px;
+  }
+
+  .user-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* =========================
+   PREMIUM DARK MODE
+========================= */
+body.dark {
+  background: #070b14; /* 🔥 deeper premium dark */
+  color: #e5e7eb;
+}
+
+/* navbar */
+body.dark .navbar {
+  background: rgba(10, 14, 25, 0.72);
+  
+  backdrop-filter: blur(26px);
+
+  border-bottom: 1px solid rgba(255, 215, 0, 0.10);
+
+  box-shadow:
+    0 10px 35px rgba(0, 0, 0, 0.6),
+    0 0 25px rgba(255, 215, 0, 0.06);
+}
+
+/* brand */
+body.dark .brand span {
+  color: dodgerblue;
+  /* background: linear-gradient(90deg, #fff, #cbd5e1); */
+  /* "-webkit-background-clip: text; */
+  /* -webkit-text-fill-color: transparent; */
+}
+
+/* nav */
+body.dark .nav a {
+  color: #fdfdfd;
+}
+
+body.dark .nav a:hover {
+  color: hsl(40 54% 56%);
+}
+
+/* icons */
+body.dark .user-icon,
+body.dark #darkToggle {
+  background: rgba(31, 41, 55, 0.6);
+  color: #f9fafb;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+
+body.dark .user-icon:hover,
+body.dark #darkToggle:hover {
+  transform: translateY(-2px) scale(1.05);
+  background: rgba(55, 65, 81, 0.6);
+}
+
+/* hamburger */
+body.dark .hamburger span {
+  background: #f9fafb;
+}
+
+/* dropdown */
+body.dark .nav {
+  background: rgba(10, 14, 25, 0.72);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+
+
+
+/* =========================
+   HERO SECTION
+========================= */
+.hero {
+  padding: 90px 0 70px; /* 🔥 improved spacing */
+}
+
+/* layout */
+.hero-container {
+  width: 92%;
+  max-width: 1200px;
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+}
+
+/* TEXT */
+.hero-content h1 {
+  font-size: 2.9rem; /* 🔥 slightly bigger */
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.5px; /* 🔥 premium feel */
+  color: #111;
+}
+
+.hero-content h1 span {
+  color:hsl(40 54% 56%);
+}
+
+.hero-content p {
+  margin: 20px 0;
+  font-size: 1.05rem; /* 🔥 improved readability */
+  line-height: 1.8;
+  color: #555;
+  max-width: 500px;
+}
+
+
+/* BUTTONS */
+.hero-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.btn {
+  padding: 12px 22px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+/* primary */
+.btn.primary {
+  background: hsl(40 54% 56%);
+  color: white;
+}
+
+.btn.primary:hover {
+  background: hsl(40deg 99.84% 26.92%);
+  transform: translateY(-2px);
+}
+
+/* secondary */
+.btn.secondary {
+  background: white;
+  color: #111;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.btn.secondary:hover {
+  transform: translateY(-2px);
+}
+
+/* IMAGE */
+.hero-image img {
+  width: 100%;
+  max-width: 500px;
+}
+
+
+/* ========================= 
+   MOBILE HERO (LEFT ALIGNED)
+========================= */
+@media (max-width: 768px) {
+
+  .hero {
+    padding: 50px 0;
+    margin: 0;
+  }
+
+  .hero-container {
+    grid-template-columns: 1fr;
+    text-align: left;
+
+    width: 100%;
+    margin: 0;
+    padding: 0 18px;   /* ✅ clean mobile spacing */
+    box-sizing: border-box;
+  }
+
+  .hero-content h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+    text-align: left;
+  }
+
+  .hero-content p {
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+  }
+
+  .hero-buttons {
+    justify-content: flex-start;
+  }
+
+  .hero-image {
+    order: -1; /* image on top */
+  }
+}
+
+
+/* HERO DARK MODE */
+body.dark .hero-content h1 {
+  color: #f3f4f6;
+}
+
+body.dark .hero-content p {
+  color: #cbd5e1;
+}
+
+body.dark .btn.secondary {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+
+/* =========================
+   HERO ALT (2 COL + RIGHT STACKED CONTENT)
+========================= */
+
+.hero--alt .hero-container {
+  width: 92%;
+  max-width: 1200px;
+
+  margin: 0 auto;
+  text-align: left;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 columns */
+  align-items: center;
+  gap: 50px;
+}
+
+/* LEFT COLUMN */
+/* .hero-left {
+  min-height: 300px;
+} */
+
+/* RIGHT COLUMN STACK */
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =========================
+   VIDEO LABEL (NEW ADDITION)
+========================= */
+.hero-video::before {
+  content: "🚀 BlackRock Video Presentation";
+  display: block;
+  margin-bottom: 10px;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  color: hsl(40 54% 56%);
+}
+
+/* =========================
+   HERO ALT VIDEO IMPROVE
+========================= */
+.hero-video video {
+  width: 100%;
+  border-radius: 20px; /* 🔥 smoother */
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15); /* 🔥 deeper shadow */
+  object-fit: cover;
+  transition: 0.3s ease;
+}
+
+/* subtle hover */
+.hero-video video:hover {
+  transform: scale(1.01);
+}
+
+/* video shadow upgrade in dark */
+body.dark .hero-video video {
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+
+/* TEXT (FIXED → LEFT ALIGN) */
+.hero--alt .hero-content {
+  text-align: left;        /* ✅ FIXED */
+}
+
+/* BUTTONS (FIXED → LEFT ALIGN) */
+.hero--alt .hero-buttons {
+  justify-content: flex-start;  /* ✅ FIXED */
+}
+
+/* TYPOGRAPHY */
+.hero--alt .hero-content h1 {
+  font-size: 2.6rem;
+  line-height: 1.2;
+}
+
+/* PARAGRAPH (FIXED → NO RIGHT PUSH) */
+.hero--alt .hero-content p {
+  max-width: 600px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+
+/* =========================
+   MOBILE (CLEAN + PROPER LEFT SPACING)
+========================= */
+@media (max-width: 768px) {
+
+  .hero--alt .hero-container {
+    grid-template-columns: 1fr;
+    gap: 22px;
+
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+
+    padding: 0 18px;
+    box-sizing: border-box;
+  }
+
+  /* VIDEO FIRST */
+  .hero-video {
+    order: -1;
+  }
+
+  /* LEFT ALIGN TEXT */
+  .hero--alt .hero-content {
+    text-align: left;
+  }
+
+  .hero--alt .hero-buttons {
+    justify-content: flex-start;
+  }
+
+  .hero--alt .hero-content h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .hero--alt .hero-content p {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+
+/* =========================
+   PRICING HEADER
+========================= */
+.pricing-header {
+  padding-top: 60px;
+}
+
+.pricing-header p {
+  color: #666;
+  font-size: 1rem;
+}
+
+
+/* =========================
+   PACKAGE SECTION (UPGRADED PREMIUM VERSION)
+========================= */
+
+.package-section {
+  padding: 90px 0;
+}
+
+/* HEADER TITLE */
+.package-section .section-title {
+  text-align: center;
+  font-size: 2.3rem;
+  font-weight: 800;
+  margin-bottom: 40px;
+  color: #111;
+}
+
+/* =========================
+   GRID (DESKTOP)
+========================= */
+
+.package-grid {
+  width: 92%;
+  max-width: 1300px;
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+
+  justify-items: center; /* ✅ centers cards */
+}
+
+/* TABLET */
+@media (max-width: 991px) {
+  .package-grid {
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center; /* keep centered */
+  }
+}
+
+/* =========================
+   MOBILE FIX (CENTER EVERYTHING)
+========================= */
+
+@media (max-width: 576px) {
+
+  .package-grid {
+    grid-template-columns: 1fr;
+    justify-items: center;   /* ✅ centers card horizontally */
+    width: 100%;
+  }
+
+  .package-card {
+    width: 92%;              /* ✅ prevents full stretch */
+    max-width: 380px;       /* nice centered card look */
+    margin: 0 auto;         /* extra safety center */
+  }
+}
+
+/* =========================
+   CARD DESIGN (PREMIUM UPGRADE)
+========================= */
+
+.package-card {
+  border-radius: 20px;
+  padding: 26px;
+  position: relative;
+  overflow: hidden;
+
+  background-size: cover;
+  background-position: center;
+
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.18),
+    0 0 40px rgba(255, 215, 0, 0.22),
+    0 0 90px rgba(255, 215, 0, 0.10);
+
+  border: 1px solid rgba(255, 215, 0, 0.12);
+}
+
+/* DARK OVERLAY */
+.package-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.62);
+  z-index: 0;
+}
+
+/* CONTENT LAYER */
+.package-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* TITLE */
+.package-card__title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: hsl(40 54% 56%);
+}
+
+/* FEATURES */
+.package-card__features {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0;
+}
+
+.package-card__features li {
+  font-size: 0.95rem;
+  color: #e5e7eb;
+  margin: 7px 0;
+}
+
+/* RANGE */
+.package-card__range {
+  margin-top: 16px;
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: hsl(40 54% 56%);
+}
+
+/* BUTTON */
+.btn-invest {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  background: hsl(40 54% 56%);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+.btn-invest:hover {
+  background: hsl(40deg 99.84% 26.92%);
+  transform: translateY(-3px);
+}
+
+/* BADGE */
+.badge {
+  background: #22c55e;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: white;
+}
+
+/* HOVER */
+.package-card:hover {
+  transform: translateY(-12px) scale(1.02);
+}
+
+/* DARK MODE */
+body.dark .package-card {
+  border: 3px solid hsl(40 54% 56%);
+}
+
+/* =========================
+   FEATURES SECTION
+========================= */
+
+.features-section {
+  padding: 90px 0;
+  background: transparent;
+}
+
+.section-header {
+  max-width: 650px;
+  margin: 0 auto 50px;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.section-title b {
+  color: hsl(40 54% 56%);
+}
+
+/* =========================
+   GRID
+========================= */
+
+.features-grid {
+  width: 92%;
+  max-width: 1200px;
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+/* tablet */
+@media (max-width: 992px) {
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* mobile */
+@media (max-width: 576px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   CARD DESIGN
+========================= */
+
+/* =========================
+   FEATURE CARD (PREMIUM BINANCE STYLE)
+========================= */
+
+.feature-card {
+  border-radius: 20px;
+  padding: 26px;
+  position: relative;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+
+  background-size: cover;
+  background-position: center;
+
+  transition: all 0.35s ease;
+
+  border: 1px solid rgba(255, 215, 0, 0.18);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12),
+    0 0 20px rgba(255, 215, 0, 0.12);
+
+  will-change: transform;
+}
+
+
+/* =========================
+   HOVER EFFECT (LUXURY)
+========================= */
+
+.feature-card:hover {
+  transform: translateY(-8px) scale(1.02);
+
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.25),
+    0 0 40px rgba(255, 215, 0, 0.25),
+    0 0 100px rgba(255, 215, 0, 0.12);
+}
+
+
+/* =========================
+   DARK OVERLAY
+========================= */
+
+.feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 0;
+}
+
+
+/* =========================
+   CONTENT LAYER
+========================= */
+
+.feature-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* =========================
+   GLOW EFFECT
+========================= */
+
+.feature-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at top,
+    rgba(255, 215, 0, 0.18),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+.feature-card:hover::after {
+  opacity: 1;
+}
+
+
+/* =========================
+   ICON
+========================= */
+
+.feature-icon {
+  font-size: 26px;
+  color: hsl(40 54% 56%);
+  margin-bottom: 12px;
+}
+
+
+/* =========================
+   TEXT
+========================= */
+
+.feature-card h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: hsl(40 54% 56%);
+}
+
+.feature-card p {
+  font-size: 0.92rem;
+  color: #e5e7eb;
+  line-height: 1.5;
+}
+
+
+/* =========================
+   DARK MODE (FINTECH STYLE)
+========================= */
+
+body.dark .feature-card {
+  background: rgba(17, 24, 39, 0.65);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.6),
+    0 0 25px rgba(255, 215, 0, 0.15);
+}
+
+body.dark .feature-card p {
+  color: #cbd5e1;
+}
+
+body.dark .section-title {
+  color: #f9fafb;
+}
+
+
+/* =========================
+   BINANCE LIVE WRAPPER (MOBILE OPTIMIZED)
+========================= */
+
+.transaction-table {
+  margin-top: 25px;
+  padding: 14px;
+
+  max-height: 420px;
+  overflow-y: auto;
+
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(0,0,0,0.05);
+  position: relative;
+}
+
+/* LIVE badge */
+.transaction-table::before {
+  content: "● LIVE TRADES";
+  position: sticky;
+  top: 0;
+
+  display: block;
+  padding: 10px 12px;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+
+  color: #22c55e;
+  background: rgba(255,255,255,0.85);
+
+  border-radius: 10px;
+  margin-bottom: 10px;
+
+  animation: pulseLive 1.5s infinite;
+}
+
+@keyframes pulseLive {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* scrollbar */
+.transaction-table::-webkit-scrollbar {
+  width: 4px;
+}
+
+.transaction-table::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+}
+
+body.dark .transaction-table::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+}
+
+
+/* =========================
+   ROW (BINANCE STYLE RESPONSIVE)
+========================= */
+
+.transaction-row {
+  display: grid;
+  grid-template-columns: 1.2fr 40px 1fr;
+  align-items: center;
+
+  padding: 12px 12px;
+  margin-bottom: 10px;
+
+  border-radius: 12px;
+
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(0,0,0,0.04);
+
+  transition: all 0.25s ease;
+
+  animation: fadeInUp 0.35s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.transaction-row:hover {
+  transform: scale(1.01);
+}
+
+/* =========================
+   LEFT SIDE
+========================= */
+
+.tx-left {
+  text-align: left;
+  min-width: 0;
+}
+
+.tx-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #111;
+}
+
+.tx-time {
+  font-size: 0.72rem;
+  color: #6b7280;
+}
+
+.txid {
+  font-size: 0.65rem;
+  font-family: monospace;
+  color: #9ca3af;
+  margin-top: 3px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================
+   CENTER (VERIFY DOT)
+========================= */
+
+.tx-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #22c55e;
+  position: relative;
+}
+
+/* glowing dot */
+.tx-center::after {
+  content: "";
+  position: absolute;
+
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e;
+
+  animation: glow 1.2s infinite;
+}
+
+@keyframes glow {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.6); opacity: 0.4; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* =========================
+   RIGHT SIDE
+========================= */
+
+.tx-right {
+  text-align: right;
+}
+
+.tx-coin {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.tx-amount {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #16a34a;
+}
+
+/* =========================
+   TABS (MOBILE FIXED)
+========================= */
+
+.trsTabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+
+  background: #f3f4f6;
+  cursor: pointer;
+
+  font-weight: 600;
+  font-size: 0.8rem;
+
+  transition: 0.2s ease;
+}
+
+.tab.active {
+  background: #16a34a;
+  color: white;
+}
+
+/* =========================
+   MOBILE OPTIMIZATION (KEY FIX)
+========================= */
+
+@media (max-width: 600px) {
+
+  .transaction-table {
+    max-height: 360px;
+    padding: 12px;
+  }
+
+  .transaction-row {
+    grid-template-columns: 1fr 32px;
+    grid-template-rows: auto auto;
+    gap: 6px;
+  }
+
+  .tx-right {
+    grid-column: 1 / span 2;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+
+  .tx-center {
+    grid-row: span 2;
+  }
+
+  .txid {
+    display: block;
+    font-size: 0.65rem;
+    color: #9ca3af;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    max-width: 100%;
+  }
+
+}
+
+/* =========================
+   DARK MODE (BINANCE STYLE)
+========================= */
+
+body.dark .transaction-table {
+  background: rgba(17, 24, 39, 0.65);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+body.dark .transaction-row {
+  background: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+body.dark .tx-name {
+  color: #f9fafb;
+}
+
+body.dark .tx-time {
+  color: #9ca3af;
+}
+
+body.dark .tx-amount {
+  color: #22c55e;
+}
+
+
+
+
+
+/* =========================
+   CEO FINTECH SECTION
+========================= */
+
+.ceo-section {
+  margin: 0;
+  margin-top: 10%;
+  padding: 90px 0;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+}
+
+/* HEADER */
+.ceo-header {
+  text-align: center;
+  margin-bottom: 40px;
+  
+}
+
+.ceo-header h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color:hsl(40 54% 56%);
+}
+
+.ceo-header p {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+
+/* =========================
+   MAIN CARD (PREMIUM FINTECH GLASS)
+========================= */
+
+.ceo-card {
+  width: 92%;
+  max-width: 1200px;
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 28px;
+
+  padding: 28px;
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 215, 0, 0.15);
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,0.12),
+    0 0 25px rgba(255,215,0,0.08);
+
+  transition: all 0.35s ease;
+}
+
+.ceo-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.25),
+    0 0 40px rgba(255,215,0,0.15);
+}
+
+
+/* =========================
+   PROFILE LEFT
+========================= */
+
+.ceo-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ceo-avatar img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  border: 2px solid rgba(255, 215, 0, 0.4);
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.15),
+    0 0 15px rgba(255,215,0,0.2);
+}
+
+.ceo-info h3 {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ceo-info span {
+  font-size: 0.85rem;
+  color: hsl(40 54% 56%);
+  font-weight: 600;
+}
+
+
+/* =========================
+   BIO CENTER
+========================= */
+
+.ceo-bio h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+.ceo-bio p {
+  color: #475569;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.ceo-quote {
+  margin-top: 16px;
+  padding: 14px 16px;
+
+  border-left: 3px solid hsl(40 54% 56%);
+
+  background: rgba(255, 215, 0, 0.06);
+  border-radius: 10px;
+
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+
+/* =========================
+   STATS RIGHT (DASHBOARD STYLE)
+========================= */
+
+.ceo-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stat {
+  padding: 14px;
+  border-radius: 12px;
+
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.12);
+
+  text-align: center;
+
+  transition: 0.25s ease;
+}
+
+.stat:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.stat .num {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: hsl(40 54% 56%);
+}
+
+.stat .label {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+
+/* =========================
+   RESPONSIVE (MOBILE FIXED)
+========================= */
+
+@media (max-width: 991px) {
+  .ceo-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 22px;
+  }
+
+  .ceo-profile {
+    margin-bottom: 10px;
+  }
+
+  .ceo-bio {
+    margin-bottom: 10px;
+  }
+
+  .ceo-stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .stat {
+    flex: 1;
+    min-width: 100px;
+  }
+}
+
+
+/* =========================
+   DARK MODE (BINANCE STYLE)
+========================= */
+
+body.dark .ceo-section {
+  background: #070b14;
+}
+
+body.dark .ceo-card {
+  background: rgba(17, 24, 39, 0.65);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.7),
+    0 0 30px rgba(255,215,0,0.1);
+}
+
+body.dark .ceo-info h3,
+body.dark .ceo-bio h4 {
+  color: #f9fafb;
+}
+
+body.dark .ceo-bio p {
+  color: #cbd5e1;
+}
+
+body.dark .ceo-quote {
+  background: rgba(255, 215, 0, 0.08);
+  color: #e5e7eb;
+}
+
+body.dark .stat {
+  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.18);
+}
+
+body.dark .stat .label {
+  color: #9ca3af;
+}
+
+
+
+/* FAQ SECTION */
+.faq-section {
+  margin-top: 6%;
+  margin-bottom: 7%;
+  margin: 0;
+  position: relative;
+}
+
+/* SEARCH */
+.faq-search {
+  margin-top: 15px;
+}
+
+.faq-search input {
+  width: 100%;
+  padding: 12px 14px;
+
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
+
+  outline: none;
+
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(10px);
+
+  font-size: 0.9rem;
+}
+
+/* CARD */
+.faq-card {
+  margin-top: 14px;
+  border-radius: 14px;
+
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(16px);
+
+  border: 1px solid rgba(0,0,0,0.05);
+
+  overflow: hidden;
+
+  transition: 0.25s ease;
+}
+
+.faq-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+}
+
+/* BUTTON */
+.faq-btn {
+  width: 100%;
+  padding: 16px 18px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: transparent;
+  border: none;
+
+  font-weight: 600;
+  font-size: 0.95rem;
+
+  cursor: pointer;
+  color: #111;
+}
+
+/* ARROW */
+.arrow {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #6b7280;
+  border-bottom: 2px solid #6b7280;
+  transform: rotate(45deg);
+  transition: 0.3s ease;
+}
+
+.faq-btn:not(.collapsed) .arrow {
+  transform: rotate(-135deg);
+  border-color: hsl(40 54% 56%);
+}
+
+/* BODY */
+.faq-body {
+  padding: 14px 18px;
+
+  font-size: 0.9rem;
+  line-height: 1.6;
+
+  color: #4b5563;
+
+  border-top: 1px solid rgba(0,0,0,0.04);
+
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(5px);}
+  to {opacity:1; transform:translateY(0);}
+}
+
+/* ACTIVE STATE */
+.faq-btn:not(.collapsed) {
+  color: hsl(40 54% 56%);
+}
+
+/* DARK MODE */
+body.dark .faq-card {
+  background: rgba(17,24,39,0.7);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+body.dark .faq-btn {
+  color: #f9fafb;
+}
+
+body.dark .faq-body {
+  color: #cbd5e1;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+body.dark .faq-search input {
+  background: rgba(17,24,39,0.7);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+
+
+/* =========================
+   BINANCE TRADING DASHBOARD
+========================= */
+
+.binance-dashboard {
+  margin-top: 6%;
+  /* background: #0b0e11; */
+  color: #eaecef;
+}
+
+/* ================= TOP BAR ================= */
+
+.binance-topbar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+
+  margin-bottom: 25px;
+}
+
+.market-box {
+
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 12px;
+  border-radius: 10px;
+
+  text-align: center;
+  background: radial-gradient(
+    circle at top,
+    rgba(255, 215, 0, 0.18),
+    transparent 65%
+  );
+}
+
+.market-box .label {
+  font-size: 0.7rem;
+  color: #848e9c;
+}
+
+.market-box .value {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.market-box .change {
+  font-size: 0.75rem;
+}
+
+.up { color: #0ecb81; }
+.down { color: #f6465d; }
+
+/* ================= HEADER ================= */
+
+.binance-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.binance-header h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+
+.binance-header span {
+  color: #f0b90b;
+}
+
+.binance-header p {
+  color: #848e9c;
+}
+
+/* ================= TICKER ================= */
+
+.binance-ticker {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: #11161c;
+  padding: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #f6465d;
+  border-radius: 50%;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.2; }
+}
+
+.ticker-track {
+  display: flex;
+  gap: 30px;
+  white-space: nowrap;
+  animation: scroll 18s linear infinite;
+  font-size: 0.9rem;
+}
+
+/* ================= GRID ================= */
+
+.binance-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+/* ================= PANELS ================= */
+
+.panel {
+
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 15px;
+  background: radial-gradient(
+    circle at top,
+    rgba(255, 215, 0, 0.18),
+    transparent 65%
+  );
+}
+
+.panel-title {
+  font-size: 0.9rem;
+  color: #f0b90b;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+/* ================= NEWS FEED ================= */
+
+.feed-item {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.feed-item h4 {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.feed-item p {
+  font-size: 0.8rem;
+  color: #848e9c;
+}
+
+/* ================= TAGS ================= */
+
+.tag {
+  font-size: 0.65rem;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-weight: 700;
+  height: fit-content;
+}
+
+.buy { background: rgba(14,203,129,0.15); color: #0ecb81; }
+.sell { background: rgba(246,70,93,0.15); color: #f6465d; }
+
+/* ================= ACTIVITY ================= */
+
+.activity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.green { background: #0ecb81; }
+.red { background: #f6465d; }
+.yellow { background: #f0b90b; }
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+  .binance-topbar {
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 6%;
+  }
+
+  .binance-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+/* =========================
+   BINANCE SUBSCRIBE SECTION
+========================= */
+
+.subscribe-section {
+  position: relative;
+  padding: 100px 0;
+  margin: 5% 15%;
+}
+
+/* wrapper */
+.subscribe-wrapper {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 60px 40px;
+
+  background-size: cover;
+  background-position: center;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+/* overlay */
+.subscribe-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at top,
+    rgba(255, 215, 0, 0.18),
+    transparent 65%
+  );
+}
+
+/* content layer */
+.subscribe-wrapper .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* title */
+.subscribe-text .title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.subscribe-text .title span {
+  color: #f0b90b;
+}
+
+.subscribe-text p {
+  color: #c7c7c7;
+  margin-top: 10px;
+}
+
+/* badges */
+.subscribe-badges {
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.subscribe-badges span {
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  color: #eaecef;
+}
+
+/* form */
+.subscribe-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* input */
+.subscribe-form .form-control {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: 10px;
+
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(17,24,39,0.7);
+  color: #fff;
+
+  outline: none;
+}
+
+.subscribe-form .form-control::placeholder {
+  color: #9ca3af;
+}
+
+/* button */
+.subscribe-btn {
+  background: #f0b90b;
+  border: none;
+  padding: 14px 18px;
+
+  border-radius: 10px;
+  font-weight: 700;
+
+  color: #111;
+  cursor: pointer;
+
+  transition: 0.3s ease;
+}
+
+.subscribe-btn:hover {
+  background: #ffcb2b;
+  transform: translateY(-2px);
+}
+
+/* footer note */
+.subscribe-footer {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* =========================
+   MOBILE (LANDSCAPE + TABLET FIX)
+========================= */
+
+@media (max-width: 992px) {
+  .subscribe-section {
+    margin: 0 5%;
+  }
+}
+
+/* =========================
+   MOBILE LANDSCAPE MODE
+   (KEY FIX: side-by-side compact layout)
+========================= */
+
+@media (max-width: 768px) and (orientation: landscape) {
+
+  .subscribe-section {
+    padding: 60px 0;
+  }
+
+  .subscribe-wrapper {
+    padding: 30px 25px;
+  }
+
+  .subscribe-text .title {
+    font-size: 1.4rem;
+  }
+
+  .subscribe-text p {
+    font-size: 0.85rem;
+  }
+
+  /* keep form INLINE even in landscape */
+  .subscribe-form {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .subscribe-form .form-control {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .subscribe-btn {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .subscribe-badges {
+    gap: 6px;
+  }
+
+  .subscribe-badges span {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+}
+
+/* =========================
+   MOBILE PORTRAIT (STACK MODE)
+========================= */
+
+@media (max-width: 576px) and (orientation: portrait) {
+
+  .subscribe-form {
+    flex-direction: column;
+  }
+
+  .subscribe-btn {
+    width: 100%;
+  }
+}
+
+
+/* =========================
+   FINTECH BINANCE FOOTER
+   + LANDSCAPE MOBILE MODE
+========================= */
+
+.fintech-footer {
+  background: #0b0e11;
+  color: #eaecef;
+  padding-top: 60px;
+  position: relative;
+  margin: 0;
+}
+
+/* glow line */
+.footer-glow {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #f0b90b, transparent);
+  box-shadow: 0 0 15px #f0b90b;
+  margin-bottom: 40px;
+}
+
+/* ================= GRID ================= */
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+}
+
+/* logo */
+.footer-logo {
+  width: 130px;
+  margin-bottom: 10px;
+}
+
+/* text */
+.footer-col p {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* headings */
+.footer-col h4 {
+  color: #f0b90b;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+
+/* links */
+.footer-col a {
+  display: block;
+  color: #9ca3af;
+  margin-bottom: 8px;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.footer-col a:hover {
+  color: #f0b90b;
+  transform: translateX(3px);
+}
+
+/* trust badges */
+.trust-badges {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.trust-badges span {
+  font-size: 0.75rem;
+  background: rgba(255,255,255,0.06);
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+
+/* live indicator */
+.live-indicator {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #0ecb81;
+}
+
+.live-indicator .dot {
+  width: 8px;
+  height: 8px;
+  background: #0ecb81;
+  border-radius: 50%;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.3; }
+}
+
+/* strip */
+.footer-strip {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin-top: 40px;
+  padding: 12px 0;
+}
+
+.pdf-links {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.pdf-links a {
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.pdf-links a:hover {
+  color: #f0b90b;
+}
+
+/* bottom */
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 15px 0;
+  font-size: 0.85rem;
+}
+
+.footer-bottom .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-bottom a {
+  color: #9ca3af;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.footer-bottom a:hover {
+  color: #f0b90b;
+}
+
+/* =========================
+   TABLET MODE
+========================= */
+@media (max-width: 992px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-bottom .container {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* =========================
+   MOBILE LANDSCAPE MODE (KEY UPGRADE)
+========================= */
+@media (max-width: 768px) and (orientation: landscape) {
+
+  .footer-grid {
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+
+  .footer-col {
+    min-width: 160px;
+  }
+
+  .footer-bottom .container {
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .pdf-links {
+    flex-wrap: wrap;
+  }
+}
+
+/* =========================
+   MOBILE PORTRAIT MODE
+========================= */
+@media (max-width: 576px) {
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-bottom .container {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+}
+
+.contact-card {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.form-control {
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+.form-control:focus {
+  border-color: hsl(40 54% 56%);
+  box-shadow: none;
+}
+
+.btn-primary {
+  background: hsl(40 54% 56%);
+  border: none;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+
+
