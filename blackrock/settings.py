@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'cloudinary_storage',
     'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
     'cloudinary',
     'django.contrib.humanize',
    
@@ -122,7 +123,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # ← ADD THIS
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' # ← ADD THIS
 
 MEDIA_URL = '/media/'
 
