@@ -9,7 +9,7 @@ python-decouple==3.8
 sqlparse==0.5.5
 tzdata==2026.2
 whitenoise==6.12.0
-sendgrid
-django-sendgrid-v5
-cloudinary
-django-cloudinary-storage
+sendgrid==6.11.0
+django-sendgrid-v5==1.2.3
+cloudinary==1.41.0
+django-cloudinary-storage==0.3.0
