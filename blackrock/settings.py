@@ -40,9 +40,7 @@ INSTALLED_APPS = [
     'adminpanel',   
 ]
 
-# Simple default storage
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+
 
 MIDDLEWARE = [
     # Security (must be first)

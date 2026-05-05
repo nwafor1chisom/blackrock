@@ -23,7 +23,12 @@
 
   <!-- Snow / Particle Background -->
   <div id="tsparticles"></div>
+<div class="controls">
 
+  <div class="translate-wrapper">
+          <div id="google_translate_element"></div>
+   </div>
+</div>
   <!-- ── NAVBAR ─────────────────────────────────────────────────────── -->
   <header class="navbar">
     <div class="nav-container">
@@ -45,9 +50,9 @@
 
       <div class="controls">
 
-        <div class="translate-wrapper">
+        {% comment %} <div class="translate-wrapper">
           <div id="google_translate_element"></div>
-        </div>
+        </div> {% endcomment %}
 
         <!-- User icon: dashboard if logged in, login if not -->
         {% if user.is_authenticated %}
