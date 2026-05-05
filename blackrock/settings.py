@@ -122,43 +122,6 @@ AUTH_USER_MODEL = 'users.User'
 
 
 
-# Email settings (configure for production)
-# ══════════════════════════════════════════════════════════════════════════
-# EMAIL & OTP CONFIGURATION
-# ══════════════════════════════════════════════════════════════════════════
-#
-# ── QUICK SETUP GUIDE ────────────────────────────────────────────────────
-#
-# OPTION A — Gmail (simplest for testing)
-#   1. Enable 2FA on your Google account
-#   2. Generate an "App Password": myaccount.google.com → Security → App Passwords
-#   3. Set EMAIL_HOST_USER = 'youraddress@gmail.com'
-#   4. Set EMAIL_HOST_PASSWORD = 'your-16-char-app-password'
-#
-# OPTION B — SendGrid (recommended for production)
-#   1. Sign up at sendgrid.com, create an API key
-#   2. Set EMAIL_HOST = 'smtp.sendgrid.net'
-#   3. Set EMAIL_HOST_USER = 'apikey'
-#   4. Set EMAIL_HOST_PASSWORD = '<your-sendgrid-api-key>'
-#
-# OPTION C — Mailgun
-#   EMAIL_HOST = 'smtp.mailgun.org'
-#   EMAIL_HOST_USER = 'postmaster@yourdomain.mailgun.org'
-#   EMAIL_HOST_PASSWORD = '<mailgun-smtp-password>'
-#
-# OPTION D — Console (development only — OTP appears in terminal)
-#   EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-#   OTP_DEBUG_PRINT = True   ← always prints OTP to terminal
-#
-# ─────────────────────────────────────────────────────────────────────────
-
-# ─────────────────────────────────────────────
-# EMAIL CONFIGURATION (GMAIL SMTP - OPTION A)
-# ─────────────────────────────────────────────
-
-## ─────────────────────────────────────────────
-# EMAIL CONFIGURATION (SENDGRID SMTP)
-# ─────────────────────────────────────────────
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.sendgrid.net'
