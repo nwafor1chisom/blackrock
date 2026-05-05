@@ -22,10 +22,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',        # ← Moved here
+    'cloudinary_storage',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'cloudinary',                # ← Moved here
+    'cloudinary',
     # Local apps
     'core',
     'users',
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'payments',
     'referral',
     'adminpanel',
+   
+    
 ]
 
 CLOUDINARY_STORAGE = {
