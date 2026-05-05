@@ -35,7 +35,18 @@ INSTALLED_APPS = [
     'payments',
     'referral',
     'adminpanel',
+    'cloudinary_storage',
+    'cloudinary',
 ]
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET'),
+}
+
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MIDDLEWARE = [
     # Security (must be first)
@@ -120,7 +131,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
 
-
+# OPTION B — SendGrid (recommended for production)
+#   1. Sign up at sendgrid.com, create an API key
+#   2. Set EMAIL_HOST = 'smtp.sendgrid.net'
+#   3. Set EMAIL_HOST_USER = 'apikey'
+#   4. Set EMAIL_HOST_PASSWORD = '<your-sendgrid-api-key>'
 
 
 EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
