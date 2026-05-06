@@ -78,12 +78,19 @@ def kyc_submit_view(request):
 
         form = KYCSubmitForm(request.POST, request.FILES, instance=kyc)
         if form.is_valid():
-            profile = form.save(commit=False)
-            profile.user = request.user
-            profile.status = 'PENDING'
-            profile.save()
-            messages.success(request, 'KYC documents submitted successfully! Awaiting review.')
-            return redirect('kyc:status')
+            try:
+                profile = form.save(commit=False)
+                profile.user = request.user
+                profile.status = 'PENDING'
+                profile.save()
+                logger.warning(f"FILE SAVED: {profile.document_front.url}")
+                messages.success(request, 'KYC documents submitted successfully! Awaiting review.')
+                return redirect('kyc:status')
+            except Exception as e:
+                logger.error(f"UPLOAD ERROR: {str(e)}")
+                messages.error(request, f'Upload failed: {str(e)}')
+        else:
+            logger.error(f"FORM ERRORS: {form.errors}")
     else:
         form = KYCSubmitForm(instance=kyc)
 
