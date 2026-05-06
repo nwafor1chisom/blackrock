@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from decouple import config,Csv
+from decouple import config
 import dj_database_url
 import cloudinary
 
@@ -129,8 +129,15 @@ MEDIA_URL = '/media/'
 # Cloudinary for all environments
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': config('CLOUDINARY_URL'),
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET'),
 }
+cloudinary.config(
+    cloud_name=config('CLOUDINARY_CLOUD_NAME'),
+    api_key=config('CLOUDINARY_API_KEY'),
+    api_secret=config('CLOUDINARY_API_SECRET'),
+)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -230,9 +237,3 @@ LOGIN_REDIRECT_URL = '/dashboard/'     # after login, go to dashboard
 # LOGOUT_REDIRECT_URL intentionally omitted — logout_view in users/views.py handles all logout redirects
 
 
-#cloudinary configuration
-cloudinary.config( 
-  cloud_name = "dmipani7y",
-  api_key =  "126165848745411",
-  api_secret =  "CslAVs1KjcGMNdJJ84xtjSD7QuY",
-)
