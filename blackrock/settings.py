@@ -126,7 +126,7 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage' # 
 
 MEDIA_URL = '/media/'
 
-ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')  # ← ADD THIS LINE
+ENVIRONMENT = config('ENVIRONMENT', default='development')# ← ADD THIS LINE
 
 if ENVIRONMENT == 'development':
     MEDIA_ROOT = BASE_DIR / 'media'
