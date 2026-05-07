@@ -3,6 +3,8 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -126,20 +128,24 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage' # 
 
 MEDIA_URL = '/media/'
 
-# Cloudinary for all environments  
+# Cloudinary for all environments
+CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME') or config('CLOUDINARY_CLOUD_NAME', default='')
+CLOUDINARY_API_KEY_VAL = os.environ.get('CLOUDINARY_API_KEY') or config('CLOUDINARY_API_KEY', default='')
+CLOUDINARY_API_SECRET_VAL = os.environ.get('CLOUDINARY_API_SECRET') or config('CLOUDINARY_API_SECRET', default='')
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY_VAL,
+    api_secret=CLOUDINARY_API_SECRET_VAL,
+    secure=True
+)
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+    'API_KEY': CLOUDINARY_API_KEY_VAL,
+    'API_SECRET': CLOUDINARY_API_SECRET_VAL,
 }
-cloudinary.config(
-    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    api_key=os.environ.get('CLOUDINARY_API_KEY'),
-    api_secret=os.environ.get('CLOUDINARY_API_SECRET'),
-)
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
