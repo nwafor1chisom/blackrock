@@ -85,6 +85,14 @@ def kyc_submit_view(request):
                 profile.status = 'PENDING'
                 profile.save()
                 logger.warning(f"FILE SAVED: {profile.document_front.url}")
+                logger.warning(f"FILE NAME: {profile.document_front.name}")
+                # Test direct Cloudinary upload
+                import cloudinary.uploader
+                test = cloudinary.uploader.upload(
+                    profile.document_front.file,
+                    folder='kyc_test'
+                )
+                logger.warning(f"CLOUDINARY TEST URL: {test['secure_url']}")
                 messages.success(request, 'KYC documents submitted successfully! Awaiting review.')
                 return redirect('kyc:status')
             except Exception as e:
