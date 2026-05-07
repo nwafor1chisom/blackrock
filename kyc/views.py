@@ -51,17 +51,12 @@ from django.contrib import messages
 from .models import KYCProfile
 from .forms import KYCSubmitForm
 import logging
-import traceback
 
 logger = logging.getLogger(__name__)
 
 
 @login_required
 def kyc_submit_view(request):
-    from django.conf import settings
-    logger.warning(f"STORAGE BACKEND: {settings.DEFAULT_FILE_STORAGE}")
-    logger.warning(f"CLOUDINARY: {getattr(settings, 'CLOUDINARY_STORAGE', 'NOT SET')}")
-
     try:
         kyc = request.user.kyc_profile
         if kyc.status == 'APPROVED':
@@ -84,20 +79,10 @@ def kyc_submit_view(request):
                 profile.user = request.user
                 profile.status = 'PENDING'
                 profile.save()
-                logger.warning(f"FILE SAVED: {profile.document_front.url}")
-                logger.warning(f"FILE NAME: {profile.document_front.name}")
-                # Test direct Cloudinary upload
-                import cloudinary.uploader
-                test = cloudinary.uploader.upload(
-                    profile.document_front.file,
-                    folder='kyc_test'
-                )
-                logger.warning(f"CLOUDINARY TEST URL: {test['secure_url']}")
                 messages.success(request, 'KYC documents submitted successfully! Awaiting review.')
                 return redirect('kyc:status')
             except Exception as e:
                 logger.error(f"UPLOAD ERROR: {str(e)}")
-                logger.error(f"TRACEBACK: {traceback.format_exc()}")
                 messages.error(request, f'Upload failed: {str(e)}')
         else:
             logger.error(f"FORM ERRORS: {form.errors}")
