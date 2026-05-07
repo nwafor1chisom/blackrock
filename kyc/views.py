@@ -51,6 +51,7 @@ from django.contrib import messages
 from .models import KYCProfile
 from .forms import KYCSubmitForm
 import logging
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +89,7 @@ def kyc_submit_view(request):
                 return redirect('kyc:status')
             except Exception as e:
                 logger.error(f"UPLOAD ERROR: {str(e)}")
+                logger.error(f"TRACEBACK: {traceback.format_exc()}")
                 messages.error(request, f'Upload failed: {str(e)}')
         else:
             logger.error(f"FORM ERRORS: {form.errors}")
