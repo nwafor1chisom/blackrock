@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 import uuid
+from cloudinary.models import CloudinaryField
 
 
 class KYCProfile(models.Model):
@@ -33,9 +34,9 @@ class KYCProfile(models.Model):
     # Document
     document_type = models.CharField(max_length=30, choices=DOC_TYPE_CHOICES)
     document_number = models.CharField(max_length=100)
-    document_front = models.ImageField(upload_to='kyc_docs/front/')
-    document_back = models.ImageField(upload_to='kyc_docs/back/', blank=True, null=True)
-    selfie_with_doc = models.ImageField(upload_to='kyc_docs/selfie/', blank=True, null=True)
+    document_front = CloudinaryField('image', folder='kyc_docs/front')
+    document_back = CloudinaryField('image', folder='kyc_docs/back', blank=True, null=True)
+    selfie_with_doc = CloudinaryField('image', folder='kyc_docs/selfie', blank=True, null=True)
 
     # Admin review
     rejection_reason = models.TextField(blank=True)
