@@ -128,10 +128,10 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage' # 
 
 MEDIA_URL = '/media/'
 
-# Cloudinary for all environments
-CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME') or config('CLOUDINARY_CLOUD_NAME', default='')
-CLOUDINARY_API_KEY_VAL = os.environ.get('CLOUDINARY_API_KEY') or config('CLOUDINARY_API_KEY', default='')
-CLOUDINARY_API_SECRET_VAL = os.environ.get('CLOUDINARY_API_SECRET') or config('CLOUDINARY_API_SECRET', default='')
+# Cloudinary
+CLOUDINARY_CLOUD_NAME = os.environ['CLOUDINARY_CLOUD_NAME']
+CLOUDINARY_API_KEY_VAL = os.environ['CLOUDINARY_API_KEY']
+CLOUDINARY_API_SECRET_VAL = os.environ['CLOUDINARY_API_SECRET']
 
 cloudinary.config(
     cloud_name=CLOUDINARY_CLOUD_NAME,
@@ -146,6 +146,9 @@ CLOUDINARY_STORAGE = {
     'API_KEY': CLOUDINARY_API_KEY_VAL,
     'API_SECRET': CLOUDINARY_API_SECRET_VAL,
 }
+
+
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
