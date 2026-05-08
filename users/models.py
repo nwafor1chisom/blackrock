@@ -6,6 +6,7 @@ from datetime import timedelta
 import uuid
 import hashlib
 import secrets as _secrets
+from cloudinary.models import CloudinaryField
 
 
 class User(AbstractUser):
@@ -15,7 +16,7 @@ class User(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     country = models.CharField(max_length=100, blank=True)
     address = models.TextField(blank=True)
-    profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    profile_picture = CloudinaryField('image', folder='profiles', blank=True, null=True)
     is_email_verified = models.BooleanField(default=False)
     referral_code = models.CharField(max_length=20, unique=True, blank=True)
     referred_by = models.ForeignKey(
@@ -65,14 +66,9 @@ class User(AbstractUser):
         return self.kyc_status == 'APPROVED'
 
 
-
 # ── OTP Delivery Attempt Log ───────────────────────────────────────────────
 
 class OTPDeliveryLog(models.Model):
-    """
-    Immutable log of every OTP delivery attempt.
-    Used for debugging, auditing, and diagnosing delivery failures.
-    """
     CHANNEL_CHOICES = [('EMAIL', 'Email'), ('SMS', 'SMS')]
     STATUS_CHOICES = [
         ('SUCCESS', 'Success'),
@@ -87,11 +83,11 @@ class OTPDeliveryLog(models.Model):
         related_name='otp_delivery_logs'
     )
     channel = models.CharField(max_length=10, choices=CHANNEL_CHOICES, default='EMAIL')
-    recipient = models.CharField(max_length=255)          # email address or phone
+    recipient = models.CharField(max_length=255)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     attempt_number = models.PositiveSmallIntegerField(default=1)
     error_message = models.TextField(blank=True)
-    provider = models.CharField(max_length=50, blank=True) # e.g. 'smtp', 'sendgrid'
+    provider = models.CharField(max_length=50, blank=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -107,29 +103,11 @@ class OTPDeliveryLog(models.Model):
 # ── Password Reset OTP ─────────────────────────────────────────────────────
 
 class PasswordResetOTP(models.Model):
-    """
-    Enterprise-grade OTP for password reset.
-
-    Security:
-    - SHA-256 hashed — plaintext never persisted
-    - Single-use enforced (is_used flag)
-    - Hard expiry (OTP_EXPIRY_MINUTES)
-    - Rate-limited requests (OTP_MAX_REQUESTS per window)
-    - Max verification attempts (OTP_MAX_VERIFY_ATTEMPTS)
-    - Constant-time comparison (secrets.compare_digest)
-    - Invalidates all previous OTPs on new request
-
-    Delivery:
-    - Retry-capable via OTPEmailService (up to MAX_SEND_RETRIES)
-    - All send attempts logged in OTPDeliveryLog
-    - Debug mode prints OTP to console even if email fails
-    """
-
-    OTP_EXPIRY_MINUTES     = 10   # OTP lifetime (reduced from 20 for security)
-    OTP_MAX_REQUESTS       = 5    # Max new-OTP requests per rate window
-    OTP_RATE_WINDOW_MINUTES = 60  # Rate limit window
-    OTP_MAX_VERIFY_ATTEMPTS = 5   # Brute-force guard: max wrong tries
-    OTP_RESEND_COOLDOWN_SEC = 60  # Minimum seconds between resend requests
+    OTP_EXPIRY_MINUTES      = 10
+    OTP_MAX_REQUESTS        = 5
+    OTP_RATE_WINDOW_MINUTES = 60
+    OTP_MAX_VERIFY_ATTEMPTS = 5
+    OTP_RESEND_COOLDOWN_SEC = 60
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
@@ -140,14 +118,11 @@ class PasswordResetOTP(models.Model):
     otp_hash = models.CharField(max_length=64, help_text="SHA-256 hash only.")
     reset_token = models.UUIDField(default=uuid.uuid4, unique=True)
 
-    # State flags
     is_used        = models.BooleanField(default=False)
     is_invalidated = models.BooleanField(default=False)
 
-    # Brute-force guard
     verify_attempts = models.PositiveSmallIntegerField(default=0)
 
-    # Delivery tracking
     delivery_status = models.CharField(
         max_length=20, default='PENDING',
         choices=[
@@ -160,7 +135,6 @@ class PasswordResetOTP(models.Model):
     send_attempts = models.PositiveSmallIntegerField(default=0)
     last_sent_at  = models.DateTimeField(null=True, blank=True)
 
-    # Metadata
     ip_address  = models.GenericIPAddressField(null=True, blank=True)
     user_agent  = models.TextField(blank=True)
     verified_at = models.DateTimeField(null=True, blank=True)
@@ -185,20 +159,16 @@ class PasswordResetOTP(models.Model):
             self.expires_at = timezone.now() + timedelta(minutes=self.OTP_EXPIRY_MINUTES)
         super().save(*args, **kwargs)
 
-    # ── Static helpers ─────────────────────────────────────────────────────
-
     @staticmethod
     def hash_otp(otp_plaintext):
         return hashlib.sha256(otp_plaintext.encode('utf-8')).hexdigest()
 
     @staticmethod
     def generate_otp():
-        """CSPRNG 6-digit OTP — never uses random.randint."""
         return str(_secrets.randbelow(900000) + 100000)
 
     @classmethod
     def check_rate_limit(cls, user):
-        """Returns (allowed: bool, wait_seconds: int)."""
         window_start = timezone.now() - timedelta(minutes=cls.OTP_RATE_WINDOW_MINUTES)
         count = cls.objects.filter(user=user, created_at__gte=window_start).count()
         if count >= cls.OTP_MAX_REQUESTS:
@@ -215,7 +185,6 @@ class PasswordResetOTP(models.Model):
 
     @classmethod
     def check_resend_cooldown(cls, user):
-        """Returns (can_resend: bool, wait_seconds: int)."""
         latest = (cls.objects
                   .filter(user=user, delivery_status__in=['SENT', 'PENDING', 'RETRYING'],
                           is_used=False, is_invalidated=False)
@@ -235,7 +204,6 @@ class PasswordResetOTP(models.Model):
 
     @classmethod
     def create_for_user(cls, user, ip_address=None, user_agent=''):
-        """Invalidate old OTPs and create a new one. Returns (instance, plaintext)."""
         cls.invalidate_previous(user)
         otp_plain = cls.generate_otp()
         instance  = cls.objects.create(
@@ -245,8 +213,6 @@ class PasswordResetOTP(models.Model):
             user_agent=user_agent,
         )
         return instance, otp_plain
-
-    # ── Instance helpers ───────────────────────────────────────────────────
 
     @property
     def is_expired(self):
@@ -269,11 +235,6 @@ class PasswordResetOTP(models.Model):
         return max(0, self.OTP_MAX_VERIFY_ATTEMPTS - self.verify_attempts)
 
     def verify(self, otp_plaintext):
-        """
-        Constant-time OTP verification with brute-force guard.
-        Returns (success: bool, error_code: str).
-        error_code: 'USED' | 'INVALIDATED' | 'EXPIRED' | 'MAX_ATTEMPTS' | 'INVALID' | None
-        """
         if self.is_used:
             return False, 'USED'
         if self.is_invalidated:
@@ -286,7 +247,6 @@ class PasswordResetOTP(models.Model):
         submitted_hash = self.hash_otp(otp_plaintext)
         is_valid = _secrets.compare_digest(submitted_hash, self.otp_hash)
 
-        # Always increment attempts (even on success, before marking used)
         self.verify_attempts += 1
         update_fields = ['verify_attempts']
 
@@ -302,7 +262,6 @@ class PasswordResetOTP(models.Model):
         self.save(update_fields=['is_used'])
 
     def record_send(self, success, error_message='', attempt_number=1, provider=''):
-        """Update delivery tracking fields after a send attempt."""
         self.send_attempts  = attempt_number
         self.last_sent_at   = timezone.now()
         self.delivery_status = 'SENT' if success else (

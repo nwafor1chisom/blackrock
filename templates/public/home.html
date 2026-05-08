@@ -24,77 +24,55 @@
 <!-- Snow Background -->
 <div id="tsparticles"></div>
 
-  <header class="navbar">
-    <div class="nav-container">
+ <header class="navbar">
+  <div class="nav-container">
 
-      <a href="{% url 'public:home' %}" class="brand">
-        <img src="{% static 'core/images/logo.jpg' %}" alt="BlackRock Logo">
-        <span><div translate="no">BlackRock</div></span>
-      </a>
+    <a href="{% url 'public:home' %}" class="brand">
+      <img src="{% static 'core/images/logo.jpg' %}" alt="BlackRock Logo">
+      <span translate="no">BlackRock</span>
+    </a>
 
-      <nav class="nav" id="navMenu">
-        <a href="{% url 'public:home' %}">Home</a>
-        <a href="{% url 'public:about' %}">About</a>
-        <a href="{% url 'public:plan' %}">Plan</a>
-        <a href="{% url 'public:faq' %}">FAQ</a>
-        <a href="{% url 'public:blog' %}">Blog</a>
-        <a href="{% url 'public:certification' %}">Certification</a>
-        <a href="{% url 'public:contact' %}">Contact</a>
-      </nav>
+    <nav class="nav" id="navMenu">
+      <a href="{% url 'public:home' %}">Home</a>
+      <a href="{% url 'public:about' %}">About</a>
+      <a href="{% url 'public:plan' %}">Plan</a>
+      <a href="{% url 'public:faq' %}">FAQ</a>
+      <a href="{% url 'public:blog' %}">Blog</a>
+      <a href="{% url 'public:certification' %}">Certification</a>
+      <a href="{% url 'public:contact' %}">Contact</a>
+    </nav>
 
-      <div class="controls">
-
-              <!-- Google Translate -->
-              <div style="
-                display: inline-flex;
-                align-items: center;
-                background: rgba(255,255,255,0.05);
-                border: 1px solid rgba(184,145,74,0.3);
-                border-radius: 6px;
-                padding: 2px 6px;
-                font-size: 12px;
-                max-width: 130px;
-                overflow: hidden;
-              ">
-                <span style="margin-right: 4px; font-size: 13px;">🌐</span>
-                <div id="google_translate_element" style="transform: scale(0.85); transform-origin: left center;"></div>
-              </div>
-
-        <!-- User icon: dashboard if logged in, login if not -->
-        {% if user.is_authenticated %}
-        <a href="{% url 'dashboard:home' %}" class="user-icon" title="My Dashboard">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8">
-            <path stroke-linecap="round" stroke-linejoin="round"
-            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 1 1 14.998 0A17.933 17.933 0 0 1 12 21.75Z"/>
-          </svg>
-        </a>
-        {% else %}
-        <a href="{% url 'users:login' %}" class="user-icon" id="userBtn" title="Login">
-          <svg xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.8"
-              stroke="currentColor"
-              width="24"
-              height="24"
-              style="color: hsl(40 54% 56%);">
-            <path stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 1 1 14.998 0A17.933 17.933 0 0 1 12 21.75Z"/>
-          </svg>
-        </a>
-        {% endif %}
-
-        <button id="darkToggle">🌙</button>
-
-        <div class="hamburger" id="hamburger">
-          <span></span><span></span><span></span>
-        </div>
-
+    <div class="controls">
+      <div class="translate-wrapper">
+        <span class="translate-icon">🌐</span>
+        <div id="google_translate_element"></div>
       </div>
 
+      {% if user.is_authenticated %}
+      <a href="{% url 'dashboard:home' %}" class="icon-btn" title="My Dashboard">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 1 1 14.998 0A17.933 17.933 0 0 1 12 21.75Z"/>
+        </svg>
+      </a>
+      {% else %}
+      <a href="{% url 'users:login' %}" class="icon-btn" title="Login">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 1 1 14.998 0A17.933 17.933 0 0 1 12 21.75Z"/>
+        </svg>
+      </a>
+      {% endif %}
+
+      <button class="icon-btn" id="darkToggle" aria-label="Toggle dark mode">🌙</button>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-  </header>
+
+  </div>
+</header>
 
 <!-- HERO -->
 <section class="hero">
