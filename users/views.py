@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
+import cloudinary.uploader
 
 from .forms import UserRegistrationForm, UserLoginForm, UserProfileUpdateForm
 from wallet.services import WalletService
@@ -91,10 +92,20 @@ def profile_view(request):
     if request.method == 'POST':
         form = UserProfileUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            # Handle profile picture upload manually
+            if 'profile_picture' in request.FILES:
+                file = request.FILES['profile_picture']
+                result = cloudinary.uploader.upload(
+                    file,
+                    folder='profiles',
+                    public_id=f"user_{request.user.id}",
+                    overwrite=True
+                )
+                user.profile_picture = result['public_id']
+            user.save()
             messages.success(request, 'Profile updated successfully.')
             return redirect('users:profile')
     else:
         form = UserProfileUpdateForm(instance=request.user)
-
     return render(request, 'users/profile.html', {'form': form})
