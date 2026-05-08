@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 import uuid
+from cloudinary.models import CloudinaryField
 
 
 class Transaction(models.Model):
@@ -38,7 +39,7 @@ class Transaction(models.Model):
         on_delete=models.SET_NULL,
         related_name='transactions'
     )
-    payment_proof = models.ImageField(upload_to='payment_proofs/', blank=True, null=True)
+    payment_proof = CloudinaryField('image', folder='payment_proofs', blank=True, null=True)
     sender_address = models.CharField(max_length=255, blank=True, help_text='TX hash or sender wallet')
     tx_hash = models.CharField(max_length=255, blank=True)
 

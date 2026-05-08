@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from cloudinary.models import CloudinaryField
 
 
 class PaymentMethod(models.Model):
@@ -18,7 +19,7 @@ class PaymentMethod(models.Model):
     name = models.CharField(max_length=20, choices=CRYPTO_CHOICES, unique=True)
     display_name = models.CharField(max_length=100)
     wallet_address = models.CharField(max_length=255)
-    qr_code = models.ImageField(upload_to='qrcodes/', blank=True, null=True)
+    qr_code = CloudinaryField('image', folder='qrcodes', blank=True, null=True)
     network_label = models.CharField(max_length=100, blank=True, help_text='e.g. TRC20, ERC20')
     minimum_deposit = models.DecimalField(max_digits=20, decimal_places=8, default=10)
     is_active = models.BooleanField(default=True)
