@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'payments',
     'referral',
     'adminpanel',
+    'anymail',
      
   
 ]
@@ -166,11 +167,11 @@ AUTH_USER_MODEL = 'users.User'
 # SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 # DEFAULT_FROM_EMAIL = 'BlackRock Support <supportblackrock@gmail.com>'
 
-# EMAIL_BACKEND = 'anymail.backends.brevo.EmailBackend'
-# ANYMAIL = {
-#     'BREVO_API_KEY': config('BREVO_API_KEY', default=''),
-# }
-# DEFAULT_FROM_EMAIL = 'BlackRock Support <supportblackrock@gmail.com>'
+EMAIL_BACKEND = 'anymail.backends.brevo.EmailBackend'
+ANYMAIL = {
+    'BREVO_API_KEY': config('BREVO_API_KEY', default=''),
+}
+DEFAULT_FROM_EMAIL = 'techly.crest <capyvibes94@gmail.com>'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')

@@ -18,4 +18,4 @@ tzdata==2026.2
 urllib3==2.6.3
 whitenoise==6.12.0
 # django-sendgrid-v5==1.2.3
-# django-anymail[brevo]
+django-anymail[brevo]
