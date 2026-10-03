@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'dashboard',
     'payments',
     'referral',
-    'adminpanel',  
+    'adminpanel',
+    'anymail',  
   
 ]
 
@@ -160,9 +161,15 @@ AUTH_USER_MODEL = 'users.User'
 #   4. Set EMAIL_HOST_PASSWORD = '<your-sendgrid-api-key>'
 
 
-EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
-SENDGRID_API_KEY = config('SENDGRID_API_KEY', default='')
-SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+# EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
+# SENDGRID_API_KEY = config('SENDGRID_API_KEY', default='')
+# SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+# DEFAULT_FROM_EMAIL = 'BlackRock Support <supportblackrock@gmail.com>'
+
+EMAIL_BACKEND = 'anymail.backends.brevo.EmailBackend'
+ANYMAIL = {
+    'BREVO_API_KEY': config('BREVO_API_KEY', default=''),
+}
 DEFAULT_FROM_EMAIL = 'BlackRock Support <supportblackrock@gmail.com>'
 
 # ── DEBUG (IMPORTANT FOR EMAIL TESTING) ──
